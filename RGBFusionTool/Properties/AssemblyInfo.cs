@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RGBFusionTool")]
-[assembly: AssemblyCopyright("Copyright © Tyler Szabo 2018")]
+[assembly: AssemblyCopyright("Copyright © 2018 Tyler Szabo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
