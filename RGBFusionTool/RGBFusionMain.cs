@@ -9,92 +9,28 @@
 using GLedApiDotNet;
 using GLedApiDotNet.LedSettings;
 using System;
-using System.Drawing;
-using Mono.Options;
-using System.IO;
 
 namespace RGBFusionTool
 {
-    class RGBFusionMain
+    public sealed class RGBFusionMain
     {
-        static void ShowHelp(OptionSet options, TextWriter o)
+        private class LazyMotherboard : IRGBFusionMotherboard
         {
-            o.WriteLine(string.Format("Usage: {0} [OPTION]...\nSet RGB Fusion motherboard LEDs\n\nOptions:", AppDomain.CurrentDomain.FriendlyName));
-            options.WriteOptionDescriptions(o);
+            Lazy<RGBFusionMotherboard> motherboard = new Lazy<RGBFusionMotherboard>();
+            public IMotherboardLedLayout Layout => motherboard.Value.Layout;
+            public IMotherboardLedSettings LedSettings => motherboard.Value.LedSettings;
+            public void Set(params int[] divisions) => motherboard.Value.Set(divisions);
+            public void SetAll(LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            int opt_Verbose = 0;
-            string opt_Color = null;
-            string opt_ColorCycle = null;
-            bool flag_DoCycle = false;
-            bool flag_Help = false;
-            string opt_Brightness = null;
-
-            OptionSet options = new OptionSet
-            {
-                {"v|verbose", v => opt_Verbose++ },
-
-                {"c|color|static=", "set static color", v => opt_Color = v },
-                {"cycle|colorcycle:", "cycle colors, changing color every {SECONDS}", v => { flag_DoCycle = true; opt_ColorCycle = v; } },
-                {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
-
-                {"?|h|help", "show help and exit", v => flag_Help = true }
-            };
-
-            try
-            {
-                byte brightness = 100;
-                LedSetting setting = null;
-
-                options.Parse(args);
-
-                if (flag_Help)
-                {
-                    ShowHelp(options, Console.Out);
-                    return;
-                }
-
-                if (!string.IsNullOrWhiteSpace(opt_Brightness))
-                {
-                    brightness = byte.Parse(opt_Brightness);
-                }
-
-                if (flag_DoCycle)
-                {
-                    TimeSpan cycleTime = TimeSpan.FromSeconds(1);
-                    if (!string.IsNullOrWhiteSpace(opt_ColorCycle))
-                    {
-                        cycleTime = TimeSpan.FromSeconds(Double.Parse(opt_ColorCycle));
-                    }
-                    if (opt_Verbose > 0) { Console.Out.WriteLine("Color cycle, rotating every {0} seconds", cycleTime.TotalSeconds); }
-                    setting = new ColorCycleLedSetting(brightness, 0, cycleTime);
-                }
-                else if (!string.IsNullOrEmpty(opt_Color))
-                {
-                    Color realColor = Color.FromName(opt_Color);
-                    if (realColor.A == 0)
-                    {
-                        realColor = Color.FromArgb(0xff, Color.FromArgb(Int32.Parse(opt_Color, System.Globalization.NumberStyles.HexNumber)));
-                    }
-                    if (opt_Verbose > 0) { Console.Out.WriteLine("Static color: {0}", realColor.ToString()); }
-                    setting = new StaticLedSetting(realColor, brightness);
-                }
-
-                if (setting != null)
-                {
-                    IRGBFusionMotherboard motherboard = new RGBFusionMotherboard();
-                    motherboard.SetAll(setting);
-                }
-            }
-            catch (Exception e)
-            {
-                ShowHelp(options, Console.Error);
-                Console.Error.WriteLine("Error: {0}", e.Message);
-                throw;
-            }
-            return;
+            Application application = new Application(
+                new LazyMotherboard(),
+                Console.Out,
+                Console.Error
+            );
+            application.Main(args);
         }
     }
 }

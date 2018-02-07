@@ -68,6 +68,7 @@ You should have received a copy of the GNU General Public License along with thi
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RGBFusionMain.cs" />
   </ItemGroup>
