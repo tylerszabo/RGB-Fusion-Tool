@@ -71,7 +71,7 @@ namespace RGBFusionTool
                     if (opt_Verbose > 0) { Console.Out.WriteLine("Color cycle, rotating every {0} seconds", cycleTime.TotalSeconds); }
                     setting = new ColorCycleLedSetting(brightness, 0, cycleTime);
                 }
-                else
+                else if (!string.IsNullOrEmpty(opt_Color))
                 {
                     Color realColor = Color.FromName(opt_Color);
                     if (realColor.A == 0)
