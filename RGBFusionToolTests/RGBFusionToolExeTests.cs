@@ -63,6 +63,15 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), USAGE, "Expect stdout shows usage");
         }
 
+        [TestMethod]
+        public void NoArgs()
+        {
+            rgbFusionTool.Main(new string[]{});
+
+            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+        }
+
         // Color options
         [DataRow(new string[] { "--color" }, DisplayName = "No value")]
         [DataRow(new string[] { "--color=Invalid" }, DisplayName = "Bad name")]
