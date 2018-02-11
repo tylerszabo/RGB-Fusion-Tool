@@ -104,10 +104,14 @@ namespace RGBFusionToolTests.Tests
         // By Name
         [DataRow(new string[] { "--color=DodgerBlue" }, DisplayName = "--color=DodgerBlue")]
         [DataRow(new string[] { "--color", "DodgerBlue" }, DisplayName = "--color DodgerBlue")]
+        [DataRow(new string[] { "--static=DodgerBlue" }, DisplayName = "--static=DodgerBlue")]
+        [DataRow(new string[] { "--static", "DodgerBlue" }, DisplayName = "--static DodgerBlue")]
         [DataRow(new string[] { "-cDodgerBlue" }, DisplayName = "-cDodgerBlue")]
         [DataRow(new string[] { "-c", "DodgerBlue" }, DisplayName = "-c DodgerBlue")]
         [DataRow(new string[] { "-c DodgerBlue" }, DisplayName = "-c DodgerBlue (OneWord)")]
         // By Hex RGB
+        [DataRow(new string[] { "--color=1e90fF" }, DisplayName = "--color=1e90fF")]
+        [DataRow(new string[] { "--color", "1e90fF" }, DisplayName = "--color 1e90fF")]
         [DataRow(new string[] { "--color=1e90fF" }, DisplayName = "--color=1e90fF")]
         [DataRow(new string[] { "--color", "1e90fF" }, DisplayName = "--color 1e90fF")]
         [DataRow(new string[] { "-c1E90Ff" }, DisplayName = "-c1E90Ff")]
