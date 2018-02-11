@@ -11,7 +11,7 @@ using System;
 
 namespace GLedApiDotNetTests
 {
-    internal class TestHelper
+    public class TestHelper
     {
         public static void AssertLedSettingsEqual(byte[] expected, byte[] actual)
         {

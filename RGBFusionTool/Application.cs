@@ -84,7 +84,7 @@ namespace RGBFusionTool
                 }
                 else if (!string.IsNullOrEmpty(opt_Color))
                 {
-                    Color realColor = Color.FromName(opt_Color);
+                    Color realColor = Color.FromName(opt_Color.Trim());
                     if (realColor.A == 0)
                     {
                         realColor = Color.FromArgb(0xff, Color.FromArgb(Int32.Parse(opt_Color, System.Globalization.NumberStyles.HexNumber)));
