@@ -46,6 +46,29 @@ namespace GLedApiDotNetTests
         private ControlState state;
         public ControlState State { get => state; set => state = value; }
 
+        public bool IsInitialized
+        {
+            get
+            {
+                if (!stateTrackingEnabled)
+                {
+                    throw new System.InvalidOperationException("State tracking not enabled");
+                }
+                switch (state)
+                {
+                    case ControlState.Uninitialized:
+                    case ControlState.DoneGetLedLayout:
+                    case ControlState.DoneGetMaxDivision:
+                        return false;
+                    case ControlState.DoneInit:
+                    case ControlState.DoneSetLedData:
+                        return true;
+                    default:
+                        throw new System.InvalidOperationException(string.Format("Unexpected state {0}", state));
+                }
+            }
+        }
+
         private uint nextReturn = Status.ERROR_SUCCESS;
         public uint NextReturn { set => nextReturn = value; }
 
@@ -57,11 +80,13 @@ namespace GLedApiDotNetTests
 
         private bool applyCalled = false;
         private int lastApply = 0;
-        public int LastApply {
-            get {
+        public int LastApply
+        {
+            get
+            {
                 if (!applyCalled)
                 {
-                    throw new Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException("Apply was not called");
+                    throw new AssertFailedException("Apply was not called");
                 }
                 return lastApply;
             }

@@ -11,12 +11,17 @@ using GLedApiDotNetTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RGBFusionToolTests.Tests
 {
     [TestClass]
     public class RGBFusionToolExeTests
     {
+        public readonly Regex ANY = new Regex(".+", RegexOptions.Compiled);
+        public readonly Regex USAGE = new Regex("^Usage:", RegexOptions.Compiled);
+
         private class LazyTestMotherboard : IRGBFusionMotherboard
         {
             Lazy<RGBFusionMotherboard> motherboard;
@@ -31,27 +36,63 @@ namespace RGBFusionToolTests.Tests
             public void SetAll(GLedApiDotNet.LedSettings.LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
         }
 
-        GLedApiv1_0_0Mock mock;
-        RGBFusionTool.Application rgbFusionTool;
-        StringWriter stdout;
-        StringWriter stderr;
+        private GLedApiv1_0_0Mock mock;
+        private RGBFusionTool.Application rgbFusionTool;
+        private StringBuilder stdout;
+        private StringBuilder stderr;
 
         [TestInitialize]
         public void Setup()
         {
             mock = new GLedApiv1_0_0Mock(true);
-            stdout = new StringWriter();
-            stderr = new StringWriter();
-            rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mock), stdout, stderr);
+            stdout = new StringBuilder();
+            stderr = new StringBuilder();
+            rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mock), new StringWriter(stdout), new StringWriter(stderr));
         }
 
-        [TestMethod]
-        public void Help()
+        [DataRow(new string[] { "--help" })]
+        [DataRow(new string[] { "-h" })]
+        [DataRow(new string[] { "-?" })]
+        [DataTestMethod]
+        public void Help(string[] args)
         {
-            rgbFusionTool.Main(new string[]{"--help"});
+            rgbFusionTool.Main(args);
 
-            Assert.IsTrue(string.IsNullOrEmpty(stderr.GetStringBuilder().ToString()));
-            Assert.IsTrue(stdout.GetStringBuilder().ToString().StartsWith("Usage:"));
+            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), USAGE, "Expect stdout shows usage");
+        }
+
+        // Color options
+        [DataRow(new string[] { "--color" }, DisplayName = "No value")]
+        [DataRow(new string[] { "--color=Invalid" }, DisplayName = "Bad name")]
+        [DataRow(new string[] { "-c Invalid" }, DisplayName = "Short, bad name")]
+        [DataRow(new string[] { "-cInvalid" }, DisplayName = "Short, bad name 2")]
+        // ColorCycle options
+        [DataRow(new string[] { "--colorcycle=Invalid" }, DisplayName = "Cycle, Bad name")]
+        [DataRow(new string[] { "--colorcycle=9999" }, DisplayName = "Cycle, Too high")]
+        [DataRow(new string[] { "--cycle=Invalid" }, DisplayName = "Cycle, Short, Bad name")]
+        [DataRow(new string[] { "--cycle=9999" }, DisplayName = "Cycle, Short, Too high")]
+        // Brightness options
+        [DataRow(new string[] { "--color=Red --brightness" }, DisplayName = "Brightness, No value")]
+        [DataRow(new string[] { "--color=Red --brightness=Invalid" }, DisplayName = "Brightness, Bad name")]
+        [DataRow(new string[] { "--color=Red --brightness=101" }, DisplayName = "Brightness, Too high")]
+        [DataTestMethod]
+        public void BadOptions(string[] args)
+        {
+            try
+            {
+                rgbFusionTool.Main(args);
+                Assert.Fail("Expect exception thrown");
+            }
+            catch (Exception)
+            {
+                // This pattern avoids a dependency on any particular options library
+            }
+
+            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+            StringAssert.Matches(stderr.ToString(), USAGE, "Expect stderr shows usage");
         }
     }
 }
