@@ -70,5 +70,20 @@ namespace GLedApiDotNetTests
             Assert.AreEqual(expected[14], actual[14], "Offset 14, CtrlVal0");
             Assert.AreEqual(expected[15], actual[15], "Offset 15, CtrlVal1");
         }
+
+        public static void AssertAllLeds(GLedApiv1_0_0Mock mock, byte[] expected, int ledCount)
+        {
+            Assert.AreEqual(ledCount * 16, mock.ConfiguredLeds.Length);
+
+            byte[] part = new byte[16];
+
+            for (int i = 0; i < ledCount; i++)
+            {
+                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
+                TestHelper.AssertLedSettingsEqual(expected, part);
+            }
+
+            Assert.AreEqual(-1, mock.LastApply, "Expect applied");
+        }
     }
 }

@@ -121,17 +121,10 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.AreEqual(GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS * 16, mock.ConfiguredLeds.Length);
 
-            byte[] part = new byte[16];
-
-            for (int i = 0; i < GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS; i++)
-            {
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, part);
-            }
-
-            Assert.AreEqual(-1, mock.LastApply, "Expect applied");
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
         [DataRow(new string[] { "--color=Red", "-b50" }, DisplayName = "-b50")]
@@ -147,17 +140,62 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.AreEqual(GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS * 16, mock.ConfiguredLeds.Length);
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
 
-            byte[] part = new byte[16];
+        [DataRow(new string[] { "--colorcycle" }, DisplayName = "--colorcycle")]
+        [DataRow(new string[] { "--cycle" }, DisplayName = "--cycle")]
+        [DataRow(new string[] { "--colorcycle=1" }, DisplayName = "--colorcycle=1")]
+        [DataRow(new string[] { "--cycle=1" }, DisplayName = "--cycle=1")]
+        [DataRow(new string[] { "--colorcycle=1.0" }, DisplayName = "--colorcycle=1.0")]
+        [DataRow(new string[] { "--cycle=1.0" }, DisplayName = "--cycle=1.0")]
+        [DataTestMethod]
+        public void ColorCycle_1s(string[] args)
+        {
+            rgbFusionTool.Main(args);
 
-            for (int i = 0; i < GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS; i++)
-            {
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, part);
-            }
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.AreEqual(-1, mock.LastApply, "Expect applied");
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--colorcycle=4" }, DisplayName = "--colorcycle=4")]
+        [DataRow(new string[] { "--cycle=4" }, DisplayName = "--cycle=4")]
+        [DataRow(new string[] { "--colorcycle=4.0" }, DisplayName = "--colorcycle=4.0")]
+        [DataRow(new string[] { "--cycle=4.0" }, DisplayName = "--cycle=4.0")]
+        [DataTestMethod]
+        public void ColorCycle_4s(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_4s,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--colorcycle=0.5" }, DisplayName = "--colorcycle=0.5")]
+        [DataRow(new string[] { "--cycle=0.5" }, DisplayName = "--cycle=0.5")]
+        [DataRow(new string[] { "--colorcycle=.5" }, DisplayName = "--colorcycle=.5")]
+        [DataRow(new string[] { "--cycle=.5" }, DisplayName = "--cycle=.5")]
+        [DataTestMethod]
+        public void ColorCycle_500ms(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_500ms,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
     }
 }
