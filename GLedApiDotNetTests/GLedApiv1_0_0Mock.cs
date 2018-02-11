@@ -12,8 +12,13 @@ using System.Text;
 
 namespace GLedApiDotNetTests
 {
-    class GLedApiv1_0_0Mock : GLedApiDotNet.Raw.IGLedAPIv1_0_0
+    public class GLedApiv1_0_0Mock : GLedApiDotNet.Raw.IGLedAPIv1_0_0
     {
+        public static GLedApiDotNet.RGBFusionMotherboard RGBFusionMotherboardFactory(GLedApiv1_0_0Mock mock)
+        {
+            return new GLedApiDotNet.RGBFusionMotherboard(new GLedApiDotNet.Raw.GLedAPIv1_0_0Wrapper(mock));
+        }
+
         public class Status
         {
             // Known status codes
