@@ -198,6 +198,60 @@ namespace GLedApiDotNetTests.Tests
                 7,      // CtrlVal0
                 0 };    // CtrlVal1
 
+            public static readonly byte[] ColorCycleA_1s = {
+                0x00,   // Reserved0
+                3,      // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0x00,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                7,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] ColorCycleA_4s = {
+                0x00,   // Reserved0
+                3,      // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x90,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                7,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] ColorCycleA_500ms = {
+                0x00,   // Reserved0
+                3,      // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x32,   // wTime0
+                0x00,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                7,      // CtrlVal0
+                0 };    // CtrlVal1
+
             public static readonly byte[] ColorCycleB = {
                 0x00,   // Reserved0
                 3,      // LedMode

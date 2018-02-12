@@ -61,16 +61,9 @@ namespace GLedApiDotNetTests.Tests
         {
             motherboard.Set();
 
-            Assert.AreEqual(GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS * 16, mock.ConfiguredLeds.Length);
-            for (int i = 0; i < GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS; i++)
-            {
-                byte[] part = new byte[16];
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(LedSettingTests.SettingByteArrays.Off, part);
-            }
-
-            // Ensure the LEDs got set
-            Assert.AreEqual(-1, mock.LastApply);
+            TestHelper.AssertAllLeds(mock,
+                LedSettingTests.SettingByteArrays.Off,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
         [TestMethod]
@@ -78,29 +71,16 @@ namespace GLedApiDotNetTests.Tests
         {
             motherboard.SetAll(new StaticLedSetting(Color.Red, 50));
 
-            Assert.AreEqual(GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS * 16, mock.ConfiguredLeds.Length);
-            for (int i = 0; i < GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS; i++)
-            {
-                byte[] part = new byte[16];
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(LedSettingTests.SettingByteArrays.StaticRed50, part);
-            }
-
-            // Ensure the LEDs got set
-            Assert.AreEqual(-1, mock.LastApply);
+            TestHelper.AssertAllLeds(mock,
+                LedSettingTests.SettingByteArrays.StaticRed50,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
 
             // Verify again
             motherboard.Set();
 
-            Assert.AreEqual(GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS * 16, mock.ConfiguredLeds.Length);
-            for (int i = 0; i < GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS; i++)
-            {
-                byte[] part = new byte[16];
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(LedSettingTests.SettingByteArrays.StaticRed50, part);
-            }
-
-            Assert.AreEqual(-1, mock.LastApply);
+            TestHelper.AssertAllLeds(mock,
+                LedSettingTests.SettingByteArrays.StaticRed50,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
         [DataRow(0, 1)]
