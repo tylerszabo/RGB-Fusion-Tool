@@ -194,6 +194,23 @@ namespace RGBFusionToolTests.Tests
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
+        [DataRow(new string[] { "-v", "--color=Red", "--brightness=50" }, DisplayName = "-v --color=Red --brightness=50")]
+        [DataRow(new string[] { "-vv", "--color=Red", "--brightness=50" }, DisplayName = "-vv --color=Red --brightness=50")]
+        [DataRow(new string[] { "--verbose", "--color=Red", "--brightness=50" }, DisplayName = "--verbose --color=Red --brightness=50")]
+        [DataRow(new string[] { "--color=Red", "--brightness=50", "--verbose" }, DisplayName = "--color=Red --brightness=50 --verbose")]
+        [DataTestMethod]
+        public void Brightness_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("brightness\\b.*\\b50\\b", RegexOptions.IgnoreCase), "Expect stdout includes brightness value");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
         [DataRow(new string[] { "--colorcycle" }, DisplayName = "--colorcycle")]
         [DataRow(new string[] { "--cycle" }, DisplayName = "--cycle")]
         [DataRow(new string[] { "--colorcycle=1" }, DisplayName = "--colorcycle=1")]

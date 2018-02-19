@@ -93,6 +93,7 @@ namespace RGBFusionTool
                     }
                     if (opt_Verbose > 0) { stdout.WriteLine("Static color: {0}", realColor.ToString()); }
                     setting = new StaticLedSetting(realColor, brightness);
+                    if (opt_Verbose > 0) { stdout.WriteLine("Brightness: {0}", brightness); }
                 }
 
                 if (setting != null)
