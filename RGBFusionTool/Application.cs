@@ -51,7 +51,9 @@ namespace RGBFusionTool
                 {"cycle|colorcycle:", "cycle colors, changing color every {SECONDS}", v => { flag_DoCycle = true; opt_ColorCycle = v; } },
                 {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
 
-                {"?|h|help", "show help and exit", v => flag_Help = true }
+                {"?|h|help", "show help and exit", v => flag_Help = true },
+
+                {"<>", v => { throw new OptionException(string.Format("Unexpected option \"{0}\"", v),"default"); } }
             };
 
             try

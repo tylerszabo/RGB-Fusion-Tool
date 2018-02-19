@@ -73,15 +73,24 @@ namespace RGBFusionToolTests.Tests
         }
 
         // Color options
-        [DataRow(new string[] { "--color" }, DisplayName = "No value")]
-        [DataRow(new string[] { "--color=Invalid" }, DisplayName = "Bad name")]
+        [DataRow(new string[] { "--color" }, DisplayName = "--color")]
+        [DataRow(new string[] { "--color=Invalid" }, DisplayName = "--color=Invalid")]
+        [DataRow(new string[] { "--color", "--color=Red" }, DisplayName = "--color --color=Red")]
         // ColorCycle options
-        [DataRow(new string[] { "--colorcycle=Invalid" }, DisplayName = "Cycle, Bad name")]
-        [DataRow(new string[] { "--colorcycle=9999" }, DisplayName = "Cycle, Too high")]
+        [DataRow(new string[] { "--colorcycle=Invalid" }, DisplayName = "--colorcycle=Invalid")]
+        [DataRow(new string[] { "--colorcycle=9999" }, DisplayName = "--colorcycle=9999")]
+        [DataRow(new string[] { "--colorcycle=--colorcycle" }, DisplayName = "--colorcycle=--colorcycle")]
         // Brightness options
-        [DataRow(new string[] { "--color=Red", "--brightness" }, DisplayName = "Brightness, No value")]
-        [DataRow(new string[] { "--color=Red", "--brightness=Invalid" }, DisplayName = "Brightness, Bad name")]
-        [DataRow(new string[] { "--color=Red", "--brightness=101" }, DisplayName = "Brightness, Too high")]
+        [DataRow(new string[] { "--color=Red", "--brightness" }, DisplayName = "--color=Red --brightness")]
+        [DataRow(new string[] { "--color=Red", "--brightness=Invalid" }, DisplayName = "--color=Red --brightness=Invalid")]
+        [DataRow(new string[] { "--color=Red", "--brightness=101" }, DisplayName = "--color=Red --brightness=101")]
+        // Extra parameters
+        [DataRow(new string[] { "1" }, DisplayName = "1")]
+        [DataRow(new string[] { "0" }, DisplayName = "0")]
+        [DataRow(new string[] { "--badopt" }, DisplayName = "--batopt")]
+        // Ambiguious options
+        [DataRow(new string[] { "--colorcycle", "4.0" }, DisplayName = "--colorcycle 4.0")] // Optional values expect explicit "="
+        [DataRow(new string[] { "--colorcycle 4.0" }, DisplayName = "--colorcycle 4.0 (OneWord)")] // Optional values expect explicit "="
         [DataTestMethod]
         public void BadOptions(string[] args)
         {
