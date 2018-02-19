@@ -87,7 +87,9 @@ namespace RGBFusionToolTests.Tests
         // Extra parameters
         [DataRow(new string[] { "1" }, DisplayName = "1")]
         [DataRow(new string[] { "0" }, DisplayName = "0")]
-        [DataRow(new string[] { "--badopt" }, DisplayName = "--batopt")]
+        [DataRow(new string[] { "--badopt" }, DisplayName = "--badopt")]
+        [DataRow(new string[] { "badopt" }, DisplayName = "badopt")]
+        [DataRow(new string[] { "--", "badopt" }, DisplayName = "-- badopt")]
         // Ambiguious options
         [DataRow(new string[] { "--colorcycle", "4.0" }, DisplayName = "--colorcycle 4.0")] // Optional values expect explicit "="
         [DataRow(new string[] { "--colorcycle 4.0" }, DisplayName = "--colorcycle 4.0 (OneWord)")] // Optional values expect explicit "="
