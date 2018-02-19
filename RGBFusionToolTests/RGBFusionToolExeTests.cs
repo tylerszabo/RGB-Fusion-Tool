@@ -142,6 +142,40 @@ namespace RGBFusionToolTests.Tests
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
+        [DataRow(new string[] { "-v", "--color=DodgerBlue" }, DisplayName = "-v --color=DodgerBlue")]
+        [DataRow(new string[] { "-vv", "--color=DodgerBlue" }, DisplayName = "-vv --color=DodgerBlue")]
+        [DataRow(new string[] { "--verbose", "--color=DodgerBlue" }, DisplayName = "--verbose --color=DodgerBlue")]
+        [DataRow(new string[] { "--color=DodgerBlue", "--verbose" }, DisplayName = "--color=DodgerBlue --verbose")]
+        [DataTestMethod]
+        public void Color_verbose_name(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("color\\b.*dodgerblue", RegexOptions.IgnoreCase), "Expect stdout includes color name");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "-v", "--color=1E90FF" }, DisplayName = "-v --color=1E90FF")]
+        [DataRow(new string[] { "-vv", "--color=1E90FF" }, DisplayName = "-vv --color=1E90FF")]
+        [DataRow(new string[] { "--verbose", "--color=1E90FF" }, DisplayName = "--verbose --color=1E90FF")]
+        [DataRow(new string[] { "--color=1E90FF", "--verbose" }, DisplayName = "--color=1E90FF --verbose")]
+        [DataTestMethod]
+        public void Color_verbose_rgb(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("color\\b.*\\b30\\b.*\\b144\\b.*\\b255\\b", RegexOptions.IgnoreCase), "Expect stdout includes color values");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
         [DataRow(new string[] { "--color=Red", "-b50" }, DisplayName = "-b50")]
         [DataRow(new string[] { "--color=Red", "-b", "50" }, DisplayName = "-b 50")]
         [DataRow(new string[] { "--color=Red", "-b 50" }, DisplayName = "-b 50 (OneWord)")]
@@ -173,6 +207,23 @@ namespace RGBFusionToolTests.Tests
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "-v", "--colorcycle" }, DisplayName = "-v --colorcycle")]
+        [DataRow(new string[] { "-vv", "--colorcycle" }, DisplayName = "-vv --colorcycle")]
+        [DataRow(new string[] { "--verbose", "--colorcycle" }, DisplayName = "--verbose --colorcycle")]
+        [DataRow(new string[] { "--colorcycle", "--verbose" }, DisplayName = "--colorcycle --verbose")]
+        [DataTestMethod]
+        public void ColorCycle_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("(color\\w*)?cycle\\b.*\\b1(\\.0*)?\\b\\ss", RegexOptions.IgnoreCase), "Expect stdout includes mode and time");
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
