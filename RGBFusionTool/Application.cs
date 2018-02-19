@@ -103,7 +103,8 @@ namespace RGBFusionTool
             catch (Exception e)
             {
                 ShowHelp(options, stderr);
-                stderr.WriteLine("Error: {0}", e.Message);
+                stderr.WriteLine();
+                stderr.WriteLine("Error: {0}", e.ToString());
                 throw;
             }
             return;
