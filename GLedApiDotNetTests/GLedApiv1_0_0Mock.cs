@@ -34,7 +34,7 @@ namespace GLedApiDotNetTests
         public enum ControlState
         {
             Uninitialized = 1,
-            DoneInit,
+            DoneInitAPI,
             DoneGetMaxDivision,
             DoneGetLedLayout,
             DoneSetLedData
@@ -57,10 +57,10 @@ namespace GLedApiDotNetTests
                 switch (state)
                 {
                     case ControlState.Uninitialized:
-                    case ControlState.DoneGetLedLayout:
+                    case ControlState.DoneInitAPI:
                     case ControlState.DoneGetMaxDivision:
                         return false;
-                    case ControlState.DoneInit:
+                    case ControlState.DoneGetLedLayout:
                     case ControlState.DoneSetLedData:
                         return true;
                     default:
@@ -150,7 +150,7 @@ namespace GLedApiDotNetTests
 
         public int GetMaxDivision()
         {
-            AssertState(ControlState.DoneInit);
+            AssertState(ControlState.DoneInitAPI);
             state = ControlState.DoneGetMaxDivision;
             return maxDivisions;
         }
@@ -176,7 +176,7 @@ namespace GLedApiDotNetTests
         public uint InitAPI()
         {
             AssertState(ControlState.Uninitialized);
-            state = ControlState.DoneInit;
+            state = ControlState.DoneInitAPI;
             return nextReturn;
         }
 
