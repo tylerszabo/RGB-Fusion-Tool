@@ -41,6 +41,7 @@ namespace RGBFusionTool
             string opt_ColorCycle = null;
             bool flag_DoCycle = false;
             bool flag_Help = false;
+            bool flag_List = false;
             string opt_Brightness = null;
 
             OptionSet options = new OptionSet
@@ -50,6 +51,8 @@ namespace RGBFusionTool
                 {"c|color|static=", "set static color", v => opt_Color = v },
                 {"cycle|colorcycle:", "cycle colors, changing color every {SECONDS}", v => { flag_DoCycle = true; opt_ColorCycle = v; } },
                 {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
+
+                {"l|list", "list zones", v => flag_List = true },
 
                 {"?|h|help", "show help and exit", v => flag_Help = true },
 
@@ -66,6 +69,15 @@ namespace RGBFusionTool
                 if (flag_Help)
                 {
                     ShowHelp(options, stdout);
+                    return;
+                }
+
+                if (flag_List)
+                {
+                    for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
+                    {
+                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
+                    }
                     return;
                 }
 

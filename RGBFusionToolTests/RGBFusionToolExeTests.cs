@@ -280,5 +280,18 @@ namespace RGBFusionToolTests.Tests
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_500ms,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
+
+        [DataRow(new string[] { "--list" }, DisplayName = "--list")]
+        [DataRow(new string[] { "-l" }, DisplayName = "-l")]
+        [DataTestMethod]
+        public void List(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("zone \\d+", RegexOptions.IgnoreCase), "Expect stdout lists zones");
+
+            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+        }
     }
 }
