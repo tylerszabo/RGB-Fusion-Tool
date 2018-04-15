@@ -124,9 +124,9 @@ namespace GLedApiDotNet
             api = wrapperAPI;
 
             string ver = api.GetSdkVersion();
-            if (!("1.0.0".Equals(ver)))
+            if (string.IsNullOrEmpty(ver))
             {
-                throw new GLedAPIException(string.Format("Unknown API version {0}. Expected 1.0.0", ver));
+                throw new GLedAPIException(string.Format("GLedApi returned empty version"));
             }
 
             api.Initialize();

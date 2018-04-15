@@ -37,6 +37,7 @@ namespace GLedApiDotNetTests.Tests
 			new RGBFusionMotherboard(new GLedApiDotNet.Raw.GLedAPIv1_0_0Wrapper(mock));
         }
 
+        [Ignore] // This test is disabled until more rigorous version checking is implemented.
         [TestMethod]
         [ExpectedException(typeof(GLedAPIException))]
         public void TestBadVersion()
