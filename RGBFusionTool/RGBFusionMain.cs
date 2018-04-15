@@ -23,14 +23,24 @@ namespace RGBFusionTool
             public void SetAll(LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
         }
 
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
             Application application = new Application(
                 new LazyMotherboard(),
                 Console.Out,
                 Console.Error
             );
-            application.Main(args);
+
+            try
+            {
+                application.Main(args);
+            }
+            catch
+            {
+                return 1;
+            }
+
+            return 0;
         }
     }
 }

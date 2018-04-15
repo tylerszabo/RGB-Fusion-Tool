@@ -41,6 +41,7 @@ namespace RGBFusionTool
             string opt_ColorCycle = null;
             bool flag_DoCycle = false;
             bool flag_Help = false;
+            bool flag_List = false;
             string opt_Brightness = null;
 
             OptionSet options = new OptionSet
@@ -51,7 +52,11 @@ namespace RGBFusionTool
                 {"cycle|colorcycle:", "cycle colors, changing color every {SECONDS}", v => { flag_DoCycle = true; opt_ColorCycle = v; } },
                 {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
 
-                {"?|h|help", "show help and exit", v => flag_Help = true }
+                {"l|list", "list zones", v => flag_List = true },
+
+                {"?|h|help", "show help and exit", v => flag_Help = true },
+
+                {"<>", v => { throw new OptionException(string.Format("Unexpected option \"{0}\"", v),"default"); } }
             };
 
             try
@@ -64,6 +69,15 @@ namespace RGBFusionTool
                 if (flag_Help)
                 {
                     ShowHelp(options, stdout);
+                    return;
+                }
+
+                if (flag_List)
+                {
+                    for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
+                    {
+                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
+                    }
                     return;
                 }
 
@@ -91,6 +105,7 @@ namespace RGBFusionTool
                     }
                     if (opt_Verbose > 0) { stdout.WriteLine("Static color: {0}", realColor.ToString()); }
                     setting = new StaticLedSetting(realColor, brightness);
+                    if (opt_Verbose > 0) { stdout.WriteLine("Brightness: {0}", brightness); }
                 }
 
                 if (setting != null)
@@ -101,7 +116,8 @@ namespace RGBFusionTool
             catch (Exception e)
             {
                 ShowHelp(options, stderr);
-                stderr.WriteLine("Error: {0}", e.Message);
+                stderr.WriteLine();
+                stderr.WriteLine("Error: {0}", e.ToString());
                 throw;
             }
             return;
