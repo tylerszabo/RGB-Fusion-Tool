@@ -39,6 +39,7 @@ namespace RGBFusionTool
             int opt_Verbose = 0;
             string opt_Color = null;
             string opt_ColorCycle = null;
+            string opt_Zones = null;
             bool flag_DoCycle = false;
             bool flag_Help = false;
             bool flag_List = false;
@@ -53,6 +54,7 @@ namespace RGBFusionTool
                 {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
 
                 {"l|list", "list zones", v => flag_List = true },
+                {"z|zone=", "set zone", v => opt_Zones = v },
 
                 {"?|h|help", "show help and exit", v => flag_Help = true },
 
@@ -110,7 +112,17 @@ namespace RGBFusionTool
 
                 if (setting != null)
                 {
-                    motherboardLEDs.SetAll(setting);
+                    if (string.IsNullOrEmpty(opt_Zones))
+                    {
+                        motherboardLEDs.SetAll(setting);
+                    }
+                    else
+                    {
+                        int[] zones = new int[1];
+                        zones[0] = int.Parse(opt_Zones);
+                        motherboardLEDs.LedSettings[zones[0]] = setting;
+                        motherboardLEDs.Set(zones);
+                    }
                 }
             }
             catch (Exception e)

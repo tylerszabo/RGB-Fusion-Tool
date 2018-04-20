@@ -293,5 +293,45 @@ namespace RGBFusionToolTests.Tests
 
             Assert.IsTrue(mock.IsInitialized, "Expect initialized");
         }
+
+        [DataRow(new string[] { "-z1", "--color=DodgerBlue" }, DisplayName = "-z1")]
+        [DataRow(new string[] { "-z", "1", "--color=DodgerBlue" }, DisplayName = "-z 1")]
+        [DataRow(new string[] { "-z 1", "--color=DodgerBlue" }, DisplayName = "-z 1 (OneWord)")]
+        [DataRow(new string[] { "--zone=1", "--color=DodgerBlue" }, DisplayName = "--zone 1")]
+        [DataRow(new string[] { "--zone", "1", "--color=DodgerBlue" }, DisplayName = "--zone 1")]
+        [DataTestMethod]
+        public void Zone1(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
+
+            Assert.AreEqual(2, mock.LastApply, "Expect applied division 1 only");
+
+            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+        }
+
+        [DataRow(new string[] { "--zone=0", "--color=Red", "--brightness=50" }, 0, DisplayName = "zone 0")]
+        [DataRow(new string[] { "--zone=1", "--color=Red", "--brightness=50" }, 1, DisplayName = "zone 1")]
+        [DataRow(new string[] { "--zone=2", "--color=Red", "--brightness=50" }, 2, DisplayName = "zone 2")]
+        [DataRow(new string[] { "--zone=3", "--color=Red", "--brightness=50" }, 3, DisplayName = "zone 3")]
+        [DataRow(new string[] { "--zone=4", "--color=Red", "--brightness=50" }, 4, DisplayName = "zone 4")]
+        [DataTestMethod]
+        public void ZoneN(string[] args, int zone)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, zone);
+
+            Assert.AreEqual(0x1 << zone, mock.LastApply, string.Format("Expect applied division {0} only", zone));
+
+            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+        }
     }
 }

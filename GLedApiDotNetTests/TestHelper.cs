@@ -71,16 +71,32 @@ namespace GLedApiDotNetTests
             Assert.AreEqual(expected[15], actual[15], "Offset 15, CtrlVal1");
         }
 
-        public static void AssertAllLeds(GLedApiv1_0_0Mock mock, byte[] expected, int ledCount)
+        public static void AssertLedDivision(GLedApiv1_0_0Mock mock, byte[] expected, int ledCount, int division)
         {
+            Assert.IsTrue(division < ledCount, "Expect division < ledCount");
+
             Assert.AreEqual(ledCount * 16, mock.ConfiguredLeds.Length);
 
             byte[] part = new byte[16];
 
-            for (int i = 0; i < ledCount; i++)
+            Array.Copy(mock.ConfiguredLeds, division * 16, part, 0, 16);
+            try
             {
-                Array.Copy(mock.ConfiguredLeds, i * 16, part, 0, 16);
-                TestHelper.AssertLedSettingsEqual(expected, part);
+                AssertLedSettingsEqual(expected, part);
+            }
+            catch (AssertFailedException e)
+            {
+                throw new AssertFailedException(string.Format("Division {0}: {1}", division, e.Message), e);
+            }
+        }
+
+        public static void AssertAllLeds(GLedApiv1_0_0Mock mock, byte[] expected, int ledCount)
+        {
+            Assert.AreEqual(ledCount * 16, mock.ConfiguredLeds.Length);
+
+            for (int division = 0; division < ledCount; division++)
+            {
+                AssertLedDivision(mock, expected, ledCount, division);
             }
 
             Assert.AreEqual(-1, mock.LastApply, "Expect applied");
