@@ -17,30 +17,40 @@ namespace GLedApiDotNet
     {
         private class MotherboardLedLayoutImpl : IMotherboardLedLayout
         {
-            private readonly LedType[] myLayout;
+            private readonly Lazy<LedType[]> myLayout;
+            private readonly int maxDivisions;
 
-            internal MotherboardLedLayoutImpl(byte[] rawLayout)
+            internal MotherboardLedLayoutImpl(Raw.GLedAPIv1_0_0Wrapper api, int maxDivisions)
             {
-                myLayout = new LedType[rawLayout.Length];
-                for (int i = 0; i < myLayout.Length; i++)
-                {
-                    myLayout[i] = (LedType)rawLayout[i];
-                }
+                this.maxDivisions = maxDivisions;
+                myLayout = new Lazy<LedType[]>(() => {
+                    byte[] rawLayout = api.GetLedLayout(maxDivisions);
+                    if (maxDivisions != rawLayout.Length)
+                    {
+                        throw new GLedAPIException(string.Format("GetLedLayout({0}) returned {1} divisions", maxDivisions, rawLayout.Length));
+                    }
+                    LedType[] layout = new LedType[rawLayout.Length];
+                    for (int i = 0; i < layout.Length; i++)
+                    {
+                        layout[i] = (LedType)rawLayout[i];
+                    }
+                    return layout;
+                });
             }
 
-            public LedType this[int i] => myLayout[i];
+            public LedType this[int i] => myLayout.Value[i];
 
-            public int Length => myLayout.Length;
+            public int Length => maxDivisions;
 
             public IEnumerator<LedType> GetEnumerator()
             {
-                foreach(LedType led in myLayout)
+                foreach(LedType led in myLayout.Value)
                 {
                     yield return led;
                 }
             }
 
-            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<LedType>)myLayout).GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<LedType>)(myLayout.Value)).GetEnumerator();
         }
 
         private class MotherboardLedSettingsImpl : IMotherboardLedSettings
@@ -57,12 +67,17 @@ namespace GLedApiDotNet
                 }
             }
 
-            internal MotherboardLedSettingsImpl(int numSettings, LedSetting defaultSetting)
+            internal MotherboardLedSettingsImpl(IMotherboardLedLayout layout, LedSetting defaultSetting)
             {
                 dirty = true;
-                ledSettings = new LedSetting[numSettings];
+                ledSettings = new LedSetting[layout.Length];
+                IEnumerator<LedType> e = layout.GetEnumerator();
                 for (int i = 0; i < ledSettings.Length; i++)
                 {
+                    if(!e.MoveNext())
+                    {
+                        throw new GLedAPIException(string.Format("Number of layouts < length ({0})", ledSettings.Length));
+                    }
                     ledSettings[i] = defaultSetting;
                 }
             }
@@ -101,21 +116,21 @@ namespace GLedApiDotNet
             }
         }
 
-        private MotherboardLedLayoutImpl layout;
+        private Lazy<MotherboardLedLayoutImpl> layout;
         public IMotherboardLedLayout Layout
         {
             get
             {
-                return layout;
+                return layout.Value;
             }
         }
 
-        private MotherboardLedSettingsImpl ledSettings;
+        private Lazy<MotherboardLedSettingsImpl> ledSettings;
         public IMotherboardLedSettings LedSettings
         {
             get
             {
-                return ledSettings;
+                return ledSettings.Value;
             }
         }
 
@@ -137,9 +152,10 @@ namespace GLedApiDotNet
                 throw new GLedAPIException("No divisions");
             }
 
-            layout = new MotherboardLedLayoutImpl(api.GetLedLayout(maxDivisions));
+            //layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api.GetLedLayout(maxDivisions)));
+            layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api, maxDivisions));
 
-            ledSettings = new MotherboardLedSettingsImpl(maxDivisions, new OffLedSetting());
+            ledSettings = new Lazy<MotherboardLedSettingsImpl>(() => new MotherboardLedSettingsImpl(layout.Value, new OffLedSetting()));
         }
 
         public RGBFusionMotherboard() : this(new Raw.GLedAPIv1_0_0Wrapper())
@@ -148,9 +164,9 @@ namespace GLedApiDotNet
 
         public void SetAll(LedSetting ledSetting)
         {
-            for (int i = 0; i < ledSettings.Length; i++)
+            for (int i = 0; i < ledSettings.Value.Length; i++)
             {
-                ledSettings[i] = ledSetting;
+                ledSettings.Value[i] = ledSetting;
             }
 
             Set();
@@ -168,7 +184,7 @@ namespace GLedApiDotNet
                 applyDivs |= (1 << division);
             }
 
-            ledSettings.WriteToApi(api);
+            ledSettings.Value.WriteToApi(api);
 
             // Calling with no explicit divisions sets all
             api.Apply(applyDivs == 0 ? -1 : applyDivs);

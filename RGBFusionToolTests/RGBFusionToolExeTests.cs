@@ -86,6 +86,7 @@ namespace RGBFusionToolTests.Tests
         [DataRow(new string[] { "--color=Red", "--brightness=101" }, DisplayName = "--color=Red --brightness=101")]
         // Zone options
         [DataRow(new string[] { "--zone=-1", "--color=DodgerBlue" }, DisplayName = "--zone=-1 --color=DodgerBlue")]
+        [DataRow(new string[] { "--zone=99", "--color=DodgerBlue" }, DisplayName = "--zone=99 --color=DodgerBlue")]
         // Extra parameters
         [DataRow(new string[] { "1" }, DisplayName = "1")]
         [DataRow(new string[] { "0" }, DisplayName = "0")]
