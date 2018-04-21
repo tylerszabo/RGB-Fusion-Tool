@@ -62,7 +62,10 @@ namespace GLedApiDotNet
             internal void WriteToApi(Raw.GLedAPIv1_0_0Wrapper api)
             {
                 if (dirty) {
+                    // This is a workaround to avoid some zones/divisions not getting configured (issue #9).
+                    // Calling SetLedData twice will actually allow all zones to be set.
                     api.SetLedData(this);
+                    api.SetLedData(this); 
                     dirty = false;
                 }
             }
