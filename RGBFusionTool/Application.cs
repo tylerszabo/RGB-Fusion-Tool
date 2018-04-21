@@ -39,6 +39,7 @@ namespace RGBFusionTool
             int opt_Verbose = 0;
             string opt_Color = null;
             string opt_ColorCycle = null;
+            string opt_Zone = null;
             bool flag_DoCycle = false;
             bool flag_Help = false;
             bool flag_List = false;
@@ -53,6 +54,7 @@ namespace RGBFusionTool
                 {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
 
                 {"l|list", "list zones", v => flag_List = true },
+                {"z|zone=", "set zone", v => opt_Zone = v },
 
                 {"?|h|help", "show help and exit", v => flag_Help = true },
 
@@ -62,6 +64,7 @@ namespace RGBFusionTool
             try
             {
                 byte brightness = 100;
+                int zone = -1;
                 LedSetting setting = null;
 
                 options.Parse(args);
@@ -84,6 +87,19 @@ namespace RGBFusionTool
                 if (!string.IsNullOrWhiteSpace(opt_Brightness))
                 {
                     brightness = byte.Parse(opt_Brightness);
+                }
+
+                if (!string.IsNullOrWhiteSpace(opt_Zone))
+                {
+                    zone = int.Parse(opt_Zone);
+                    if (zone < 0)
+                    {
+                        throw new OptionException("Zone must be positive", "zone");
+                    }
+                    if (zone >= motherboardLEDs.Layout.Length)
+                    {
+                        throw new OptionException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length), "zone");
+                    }
                 }
 
                 if (flag_DoCycle)
@@ -110,7 +126,15 @@ namespace RGBFusionTool
 
                 if (setting != null)
                 {
-                    motherboardLEDs.SetAll(setting);
+                    if (zone == -1)
+                    {
+                        motherboardLEDs.SetAll(setting);
+                    }
+                    else
+                    {
+                        motherboardLEDs.LedSettings[zone] = setting;
+                        motherboardLEDs.Set(new int[] { zone });
+                    }
                 }
             }
             catch (Exception e)
