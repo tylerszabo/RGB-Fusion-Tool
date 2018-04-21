@@ -155,7 +155,6 @@ namespace GLedApiDotNet
                 throw new GLedAPIException("No divisions");
             }
 
-            //layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api.GetLedLayout(maxDivisions)));
             layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api, maxDivisions));
 
             ledSettings = new Lazy<MotherboardLedSettingsImpl>(() => new MotherboardLedSettingsImpl(layout.Value, new OffLedSetting()));
