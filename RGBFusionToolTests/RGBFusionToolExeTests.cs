@@ -336,5 +336,25 @@ namespace RGBFusionToolTests.Tests
 
             Assert.IsTrue(mock.IsInitialized, "Expect initialized");
         }
+
+        [DataRow(new string[] { "-v", "--zone=2", "--colorcycle" }, DisplayName = "-v --zone=2 --colorcycle")]
+        [DataRow(new string[] { "-vv", "--zone=2", "--colorcycle" }, DisplayName = "-vv --zone=2 --colorcycle")]
+        [DataRow(new string[] { "--verbose", "--zone=2", "--colorcycle" }, DisplayName = "--verbose --zone=2 --colorcycle")]
+        [DataRow(new string[] { "--zone=2", "--colorcycle", "--verbose" }, DisplayName = "--colorcycle --zone=2 --verbose")]
+        [DataTestMethod]
+        public void Zone_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("(color\\w*)?cycle\\b.*\\b1(\\.0*)?\\b\\ss", RegexOptions.IgnoreCase), "Expect stdout includes mode and time");
+            StringAssert.Matches(stdout.ToString(), new Regex("zone\\b.*\\b2\\b", RegexOptions.IgnoreCase), "Expect stdout includes zone");
+
+            TestHelper.AssertLedDivision(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 2);
+
+            Assert.AreEqual(4, mock.LastApply, string.Format("Expect applied division 2 only"));
+        }
     }
 }

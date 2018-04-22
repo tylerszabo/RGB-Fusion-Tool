@@ -132,6 +132,7 @@ namespace RGBFusionTool
                     }
                     else
                     {
+                        if (opt_Verbose > 0) { stdout.WriteLine("Setting zone {0}", zone); }
                         motherboardLEDs.LedSettings[zone] = setting;
                         motherboardLEDs.Set(new int[] { zone });
                     }
