@@ -317,11 +317,11 @@ namespace RGBFusionToolTests.Tests
             Assert.IsTrue(mock.IsInitialized, "Expect initialized");
         }
 
-        [DataRow(new string[] { "--zone=0", "--color=Red", "--brightness=50" }, 0, DisplayName = "zone 0")]
-        [DataRow(new string[] { "--zone=1", "--color=Red", "--brightness=50" }, 1, DisplayName = "zone 1")]
-        [DataRow(new string[] { "--zone=2", "--color=Red", "--brightness=50" }, 2, DisplayName = "zone 2")]
-        [DataRow(new string[] { "--zone=3", "--color=Red", "--brightness=50" }, 3, DisplayName = "zone 3")]
-        [DataRow(new string[] { "--zone=4", "--color=Red", "--brightness=50" }, 4, DisplayName = "zone 4")]
+        [DataRow(new string[] { "--zone=0", "--color=Red", "--brightness=50" }, 0, DisplayName = "--zone=0 --color=Red --brightness=50")]
+        [DataRow(new string[] { "--zone=1", "--color=Red", "--brightness=50" }, 1, DisplayName = "--zone=1 --color=Red --brightness=50")]
+        [DataRow(new string[] { "--zone=2", "--color=Red", "--brightness=50" }, 2, DisplayName = "--zone=2 --color=Red --brightness=50")]
+        [DataRow(new string[] { "--zone=3", "--color=Red", "--brightness=50" }, 3, DisplayName = "--zone=3 --color=Red --brightness=50")]
+        [DataRow(new string[] { "--zone=4", "--color=Red", "--brightness=50" }, 4, DisplayName = "--zone=4 --color=Red --brightness=50")]
         [DataTestMethod]
         public void ZoneN(string[] args, int zone)
         {
@@ -333,6 +333,25 @@ namespace RGBFusionToolTests.Tests
             TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, zone);
 
             Assert.AreEqual(0x1 << zone, mock.LastApply, string.Format("Expect applied division {0} only", zone));
+
+            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+        }
+
+        [DataRow(new string[]{ "--zone=0", "--color=Red", "--brightness=50", "--zone=1", "--colorcycle", "--zone=2", "--color=DodgerBlue" }, DisplayName = "--zone=0 --color=Red --brightness=50 --zone=1 --colorcycle --zone=2 --color=DodgerBlue")]
+        [DataTestMethod]
+        [Ignore] // Not yet implemented
+        public void ZoneAB(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 0);
+            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
+            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 2);
+
+            Assert.AreEqual(7, mock.LastApply, string.Format("Expect applied divisions 0, 1, and 2"));
 
             Assert.IsTrue(mock.IsInitialized, "Expect initialized");
         }
