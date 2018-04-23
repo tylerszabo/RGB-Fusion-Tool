@@ -25,6 +25,20 @@ Build with [Visual Studio 2017](https://www.visualstudio.com/downloads/), then c
 
     RGBFusionTool.exe --help
 
+### Examples
+
+Set all zones to red (50% brightness)
+
+	RGBFusionTool.exe --static=Red --brightness 50
+
+Color cycle with 2 second transitions in zone 0
+
+	RGBFusionTool.exe --zone=0 --colorcycle=2
+
+List zones
+
+	RGBFusionTool.exe --list
+
 ## Legal
 
 ### Copyright
