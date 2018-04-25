@@ -76,8 +76,11 @@ You should have received a copy of the GNU General Public License along with thi
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="ColorCycleArgParser.cs" />
+    <Compile Include="LedSettingArgParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RGBFusionMain.cs" />
+    <Compile Include="StaticColorArgParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -101,5 +104,6 @@ You should have received a copy of the GNU General Public License along with thi
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

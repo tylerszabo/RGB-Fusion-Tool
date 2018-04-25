@@ -1,0 +1,76 @@
+﻿// Copyright (C) 2018 Tyler Szabo
+//
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using GLedApiDotNet.LedSettings;
+using System;
+using System.Drawing;
+using Mono.Options;
+using System.Collections.Generic;
+
+namespace RGBFusionTool
+{
+    class StaticColorArgParser : LedSettingArgParser
+    {
+        private class StaticColorArgParserContext : ArgParserContext
+        {
+            public byte Brightness { get; set; }
+
+            private string colorString;
+            public string ColorString
+            {
+                get => colorString; set
+                {
+                    Valid = true;
+                    colorString = value;
+                }
+            }
+
+            protected override void SetDefaults()
+            {
+                colorString = null;
+                Brightness = 100;
+            }
+        }
+
+        StaticColorArgParserContext context;
+
+        private StaticColorArgParser(StaticColorArgParserContext context) : base(context)
+        {
+            this.context = context;
+        }
+
+        public StaticColorArgParser() : this(new StaticColorArgParserContext ())
+        {
+            RequiredOptions = new OptionSet
+            {
+                { "Static color" },
+                { "c|color|static=", "set static color", v => context.ColorString = v },
+            };
+            ExtraOptions = new OptionSet
+            {
+                { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
+            };
+        }
+
+        public override LedSetting TryParse(IEnumerable<string> args)
+        {
+            if (!PopulateContext(args))
+            {
+                return null;
+            }
+
+            Color realColor = Color.FromName(context.ColorString.Trim());
+            if (realColor.A == 0)
+            {
+                realColor = Color.FromArgb(0xff, Color.FromArgb(Int32.Parse(context.ColorString, System.Globalization.NumberStyles.HexNumber)));
+            }
+
+            return new StaticLedSetting(realColor, context.Brightness);
+        }
+    }
+}

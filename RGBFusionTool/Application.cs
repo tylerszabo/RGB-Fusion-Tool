@@ -10,137 +10,197 @@ using GLedApiDotNet;
 using GLedApiDotNet.LedSettings;
 using System;
 using System.IO;
-using System.Drawing;
 using Mono.Options;
+using System.Collections.Generic;
 
 namespace RGBFusionTool
 {
     public class Application
     {
-        IRGBFusionMotherboard motherboardLEDs;
-        TextWriter stdout;
-        TextWriter stderr;
+        private IRGBFusionMotherboard motherboardLEDs;
+        private TextWriter stdout;
+        private TextWriter stderr;
+
+        private class ApplicationContext
+        {
+            public bool flag_Help;
+            public bool flag_List;
+            public int verbosity;
+
+            public ApplicationContext()
+            {
+                SetDefaults();
+            }
+
+            public void SetDefaults()
+            {
+                flag_Help = false;
+                flag_List = false;
+                verbosity = 0;
+            }
+        }
+        ApplicationContext context;
+
+        private Dictionary<int, List<string>> zones = new Dictionary<int, List<string>>();
+        private List<string> currentZone;
+        private List<string> defaultZone;
+
+        OptionSet genericOptions;
+        OptionSet zoneOptions;
+        List<LedSettingArgParser> ledSettingArgParsers;
+
+        List<OptionSet> helpOptionSets;
 
         public Application(IRGBFusionMotherboard motherboardLEDs, TextWriter stdout, TextWriter stderr)
         {
             this.motherboardLEDs = motherboardLEDs;
             this.stdout = stdout;
             this.stderr = stderr;
+
+            context = new ApplicationContext();
+
+            defaultZone = new List<string>();
+            currentZone = defaultZone;
+
+            genericOptions = new OptionSet
+            {
+                { string.Format("Usage: {0} [OPTION]... [[LEDSETTING] | [ZONE LEDSETTING]...]", AppDomain.CurrentDomain.FriendlyName) },
+                { "Set RGB Fusion motherboard LEDs" },
+                { "" },
+                { "Options:" },
+                { "v|verbose", v => context.verbosity++ },
+                { "l|list", "list zones", v => context.flag_List = true },
+                { "?|h|help", "show help and exit", v => context.flag_Help = true },
+                { "" }
+            };
+
+            zoneOptions = new OptionSet
+            {
+                { "ZONE:" },
+                { "z|zone=", "set zone", (int zone) => {
+                    if (zone < 0)
+                    {
+                        throw new InvalidOperationException("Zones must be positive integers");
+                    }
+                    if (zones.ContainsKey(zone))
+                    {
+                        throw new InvalidOperationException(string.Format("Zone {0} already specified", zone));
+                    }
+                    if (zone >= motherboardLEDs.Layout.Length)
+                    {
+                        throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length));
+                    }
+                    currentZone = new List<string>();
+                    zones.Add(zone, currentZone);
+                } },
+                { "<>", v => currentZone.Add(v) },
+            };
+
+            ledSettingArgParsers = new List<LedSettingArgParser>
+            {
+                new StaticColorArgParser(),
+                new ColorCycleArgParser()
+            };
+
+            helpOptionSets = new List<OptionSet>
+            {
+                genericOptions,
+                zoneOptions,
+                new OptionSet { "" },
+                new OptionSet { "LEDSETTING options:" }
+            };
+            foreach (LedSettingArgParser argParser in ledSettingArgParsers)
+            {
+                helpOptionSets.Add(new OptionSet { "" });
+                helpOptionSets.Add(argParser.RequiredOptions);
+                helpOptionSets.Add(argParser.ExtraOptions);
+            }
         }
 
-        static void ShowHelp(OptionSet options, TextWriter o)
+        private void ShowHelp(TextWriter o)
         {
-            o.WriteLine(string.Format("Usage: {0} [OPTION]...\nSet RGB Fusion motherboard LEDs\n\nOptions:", AppDomain.CurrentDomain.FriendlyName));
-            options.WriteOptionDescriptions(o);
+            foreach (OptionSet option in helpOptionSets)
+            {
+                option.WriteOptionDescriptions(o);
+            }
         }
 
         public void Main(string[] args)
         {
-            int opt_Verbose = 0;
-            string opt_Color = null;
-            string opt_ColorCycle = null;
-            string opt_Zone = null;
-            bool flag_DoCycle = false;
-            bool flag_Help = false;
-            bool flag_List = false;
-            string opt_Brightness = null;
-
-            OptionSet options = new OptionSet
-            {
-                {"v|verbose", v => opt_Verbose++ },
-
-                {"c|color|static=", "set static color", v => opt_Color = v },
-                {"cycle|colorcycle:", "cycle colors, changing color every {SECONDS}", v => { flag_DoCycle = true; opt_ColorCycle = v; } },
-                {"b|brightness=", "brightness (0-100)", v => opt_Brightness = v },
-
-                {"l|list", "list zones", v => flag_List = true },
-                {"z|zone=", "set zone", v => opt_Zone = v },
-
-                {"?|h|help", "show help and exit", v => flag_Help = true },
-
-                {"<>", v => { throw new OptionException(string.Format("Unexpected option \"{0}\"", v),"default"); } }
-            };
+            context.SetDefaults();
 
             try
             {
-                byte brightness = 100;
-                int zone = -1;
-                LedSetting setting = null;
+                List<string> afterGeneric = genericOptions.Parse(args);
 
-                options.Parse(args);
-
-                if (flag_Help)
+                if (context.flag_Help)
                 {
-                    ShowHelp(options, stdout);
+                    ShowHelp(stdout);
                     return;
                 }
 
-                if (flag_List)
+                zoneOptions.Parse(afterGeneric);
+
+                if (context.flag_List || context.verbosity > 0)
                 {
                     for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
                     {
                         stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
                     }
+                }
+
+                if (defaultZone.Count == 0 && zones.Count == 0)
+                {
                     return;
                 }
-
-                if (!string.IsNullOrWhiteSpace(opt_Brightness))
+                else if (defaultZone.Count > 0 && zones.Count > 0)
                 {
-                    brightness = byte.Parse(opt_Brightness);
+                    throw new InvalidOperationException(string.Format("Unexpected options {0} before zone-specific options", string.Join(" ", defaultZone.ToArray())));
                 }
 
-                if (!string.IsNullOrWhiteSpace(opt_Zone))
+                foreach (int zone in zones.Keys)
                 {
-                    zone = int.Parse(opt_Zone);
-                    if (zone < 0)
+                    LedSetting setting = null;
+                    foreach (LedSettingArgParser parser in ledSettingArgParsers)
                     {
-                        throw new OptionException("Zone must be positive", "zone");
+                        setting = parser.TryParse(zones[zone]);
+                        if (setting != null) { break; }
                     }
-                    if (zone >= motherboardLEDs.Layout.Length)
+                    motherboardLEDs.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
+                }
+                if (context.verbosity > 0)
+                {
+                    foreach (int zone in zones.Keys)
                     {
-                        throw new OptionException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length), "zone");
+                        stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.LedSettings[zone]);
                     }
+                }
+                if (zones.Count > 0)
+                {
+                    motherboardLEDs.Set(zones.Keys);
                 }
 
-                if (flag_DoCycle)
+                if (defaultZone.Count > 0)
                 {
-                    TimeSpan cycleTime = TimeSpan.FromSeconds(1);
-                    if (!string.IsNullOrWhiteSpace(opt_ColorCycle))
+                    LedSetting setting = null;
+                    foreach (LedSettingArgParser parser in ledSettingArgParsers)
                     {
-                        cycleTime = TimeSpan.FromSeconds(Double.Parse(opt_ColorCycle));
+                        setting = parser.TryParse(defaultZone);
+                        if (setting != null) { break; }
                     }
-                    if (opt_Verbose > 0) { stdout.WriteLine("Color cycle, rotating every {0} seconds", cycleTime.TotalSeconds); }
-                    setting = new ColorCycleLedSetting(brightness, 0, cycleTime);
-                }
-                else if (!string.IsNullOrEmpty(opt_Color))
-                {
-                    Color realColor = Color.FromName(opt_Color.Trim());
-                    if (realColor.A == 0)
-                    {
-                        realColor = Color.FromArgb(0xff, Color.FromArgb(Int32.Parse(opt_Color, System.Globalization.NumberStyles.HexNumber)));
-                    }
-                    if (opt_Verbose > 0) { stdout.WriteLine("Static color: {0}", realColor.ToString()); }
-                    setting = new StaticLedSetting(realColor, brightness);
-                    if (opt_Verbose > 0) { stdout.WriteLine("Brightness: {0}", brightness); }
-                }
 
-                if (setting != null)
-                {
-                    if (zone == -1)
+                    if (setting == null) { throw new InvalidOperationException("No LED mode specified"); }
+                    if (context.verbosity > 0)
                     {
-                        motherboardLEDs.SetAll(setting);
+                        stdout.WriteLine("Set All: {0}", setting);
                     }
-                    else
-                    {
-                        if (opt_Verbose > 0) { stdout.WriteLine("Setting zone {0}", zone); }
-                        motherboardLEDs.LedSettings[zone] = setting;
-                        motherboardLEDs.Set(new int[] { zone });
-                    }
+                    motherboardLEDs.SetAll(setting);
+                    return;
                 }
             }
             catch (Exception e)
             {
-                ShowHelp(options, stderr);
+                ShowHelp(stderr);
                 stderr.WriteLine();
                 stderr.WriteLine("Error: {0}", e.ToString());
                 throw;

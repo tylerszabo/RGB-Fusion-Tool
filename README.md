@@ -39,6 +39,10 @@ List zones
 
 	RGBFusionTool.exe --list
 
+Set zones 0 through 3 to color cycle at different speeds (with verbose output)
+
+    RGBFusionTool.exe --verbose --zone=0 --cycle=32 --zone=1 --cycle=16 --zone=2 --cycle=8 --zone=3 --cycle=4
+
 ## Legal
 
 ### Copyright

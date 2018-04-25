@@ -19,5 +19,10 @@ namespace GLedApiDotNet.LedSettings
             this.Color = color;
             this.MaxBrightness = brightness;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Static: Color={0}, Brightness={1}", Color, MaxBrightness);
+        }
     }
 }

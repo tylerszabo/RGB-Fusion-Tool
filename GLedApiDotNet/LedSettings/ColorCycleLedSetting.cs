@@ -38,5 +38,11 @@ namespace GLedApiDotNet.LedSettings
 
             this.SetTime0(transitionTime);
         }
+
+        public override string ToString()
+        {
+            TimeSpan t = TimeSpan.FromMilliseconds(((double)Time0) * 10);
+            return string.Format("Color Cycle: Brightness={0}, Transition time={1}s", MaxBrightness, t.TotalSeconds, CtrlValue1 == 1 ? ", Pulse" : "");
+        }
     }
 }

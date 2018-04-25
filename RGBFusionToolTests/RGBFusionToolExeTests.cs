@@ -22,6 +22,7 @@ namespace RGBFusionToolTests.Tests
     {
         public readonly Regex ANY = new Regex(".+", RegexOptions.Compiled);
         public readonly Regex USAGE = new Regex("^Usage:", RegexOptions.Compiled);
+        public readonly Regex COLORCYCLE = new Regex("\\b(color ?)?cycle\\b.*\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private class LazyTestMotherboard : IRGBFusionMotherboard
         {
@@ -52,9 +53,9 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mock), new StringWriter(stdout), new StringWriter(stderr));
         }
 
-        [DataRow(new string[] { "--help" })]
-        [DataRow(new string[] { "-h" })]
-        [DataRow(new string[] { "-?" })]
+        [DataRow(new string[] { "--help" }, DisplayName = "--help")]
+        [DataRow(new string[] { "-h" }, DisplayName = "-h")]
+        [DataRow(new string[] { "-?" }, DisplayName = "-?")]
         [DataTestMethod]
         public void Help(string[] args)
         {
@@ -63,6 +64,23 @@ namespace RGBFusionToolTests.Tests
             Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), USAGE, "Expect stdout shows usage");
+
+            // Ensure each supported option appears in help
+            string[] supportedOptions = {
+                "zone",
+
+                "static",
+                "colorcycle",
+
+                "verbose",
+                "list",
+                "help"
+            };
+            foreach (string option in supportedOptions)
+            {
+                Regex regex = new Regex(string.Format("\\b{0}\\b", option));
+                StringAssert.Matches(stdout.ToString(), regex, "Expect stdout shows usage");
+            }
         }
 
         [TestMethod]
@@ -89,6 +107,8 @@ namespace RGBFusionToolTests.Tests
         // Zone options
         [DataRow(new string[] { "--zone=-1", "--color=DodgerBlue" }, DisplayName = "--zone=-1 --color=DodgerBlue")]
         [DataRow(new string[] { "--zone=99", "--color=DodgerBlue" }, DisplayName = "--zone=99 --color=DodgerBlue")]
+        // Mixing zones & default
+        [DataRow(new string[] { "--colorcycle", "--zone=0", "--color=DodgerBlue" }, DisplayName = "--colorcycle --zone=0 --color=DodgerBlue")]
         // Extra parameters
         [DataRow(new string[] { "1" }, DisplayName = "1")]
         [DataRow(new string[] { "0" }, DisplayName = "0")]
@@ -245,7 +265,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("(color\\w*)?cycle\\b.*\\b1(\\.0*)?\\b\\ss", RegexOptions.IgnoreCase), "Expect stdout includes mode and time");
+            StringAssert.Matches(stdout.ToString(), COLORCYCLE, "Expect stdout includes mode and time");
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
@@ -288,6 +308,8 @@ namespace RGBFusionToolTests.Tests
 
         [DataRow(new string[] { "--list" }, DisplayName = "--list")]
         [DataRow(new string[] { "-l" }, DisplayName = "-l")]
+        // List and set
+        [DataRow(new string[] { "--list", "--static=Green" }, DisplayName = "--list --static=Green")]
         [DataTestMethod]
         public void List(string[] args)
         {
@@ -341,7 +363,6 @@ namespace RGBFusionToolTests.Tests
 
         [DataRow(new string[]{ "--zone=0", "--color=Red", "--brightness=50", "--zone=1", "--colorcycle", "--zone=2", "--color=DodgerBlue" }, DisplayName = "--zone=0 --color=Red --brightness=50 --zone=1 --colorcycle --zone=2 --color=DodgerBlue")]
         [DataTestMethod]
-        [Ignore] // Not yet implemented
         public void ZoneAB(string[] args)
         {
             rgbFusionTool.Main(args);
@@ -368,7 +389,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("(color\\w*)?cycle\\b.*\\b1(\\.0*)?\\b\\ss", RegexOptions.IgnoreCase), "Expect stdout includes mode and time");
+            StringAssert.Matches(stdout.ToString(), COLORCYCLE, "Expect stdout includes mode and time");
             StringAssert.Matches(stdout.ToString(), new Regex("zone\\b.*\\b2\\b", RegexOptions.IgnoreCase), "Expect stdout includes zone");
 
             TestHelper.AssertLedDivision(mock,
