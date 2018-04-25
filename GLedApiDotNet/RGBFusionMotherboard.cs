@@ -174,7 +174,8 @@ namespace GLedApiDotNet
             Set();
         }
 
-        public void Set(params int[] divisions)
+        public void Set(params int[] divisions) { Set((IEnumerable<int>)divisions); }
+        public void Set(IEnumerable<int> divisions)
         {
             int applyDivs = 0;
             foreach (int division in divisions)

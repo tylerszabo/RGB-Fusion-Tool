@@ -18,5 +18,6 @@ namespace GLedApiDotNet
 
         void SetAll(LedSetting ledSetting);
         void Set(params int[] divisions);
+        void Set(IEnumerable<int> divisions);
     }
 }

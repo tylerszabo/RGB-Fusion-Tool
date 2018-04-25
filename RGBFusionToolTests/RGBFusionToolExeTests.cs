@@ -10,6 +10,7 @@ using GLedApiDotNet;
 using GLedApiDotNetTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,6 +34,7 @@ namespace RGBFusionToolTests.Tests
             public IMotherboardLedLayout Layout => motherboard.Value.Layout;
             public IMotherboardLedSettings LedSettings => motherboard.Value.LedSettings;
             public void Set(params int[] divisions) => motherboard.Value.Set(divisions);
+            public void Set(IEnumerable<int> divisions) => motherboard.Value.Set(divisions);
             public void SetAll(GLedApiDotNet.LedSettings.LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
         }
 
