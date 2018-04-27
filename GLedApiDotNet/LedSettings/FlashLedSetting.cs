@@ -68,5 +68,16 @@ namespace GLedApiDotNet.LedSettings
 
             CheckRanges();
         }
+
+        public TimeSpan OnOffTime => TimeSpan0;
+        public TimeSpan IntervalTime => TimeSpan1;
+        public TimeSpan CycleTime => TimeSpan2;
+        public byte Count => CtrlValue0;
+
+        public override string ToString()
+        {
+            return string.Format("Flash: Color={0}, MaxBrightness={1}, MinBrightness={2}, OnOffTime={3}s, IntervalTime={4}s, CycleTime={5}s, Count={6}",
+                Color, MaxBrightness, MinBrightness, OnOffTime.TotalSeconds, IntervalTime.TotalSeconds, CycleTime.TotalSeconds, Count);
+        }
     }
 }

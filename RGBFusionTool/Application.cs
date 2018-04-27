@@ -102,6 +102,7 @@ namespace RGBFusionTool
                 new StaticColorArgParser(),
                 new ColorCycleArgParser(),
                 new PulseArgParser(),
+                new FlashArgParser(),
                 new OffArgParser()
             };
 

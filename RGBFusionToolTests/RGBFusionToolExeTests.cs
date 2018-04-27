@@ -72,6 +72,7 @@ namespace RGBFusionToolTests.Tests
                 "static",
                 "colorcycle",
                 "pulse",
+                "flash",
                 "off",
 
                 "verbose",
@@ -378,6 +379,41 @@ namespace RGBFusionToolTests.Tests
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--flash=Blue", "--maxbrightness=100", "--minbrightness=10", "--time=0.3", "--interval=1", "--flashcycle=4", "--count=3" }, DisplayName = "--flash=Blue --maxbrightness=100 --minbrightness=10 --time=0.3 --interval=1 --flashcycle=4 --count=3")]
+        [DataTestMethod]
+        public void Flash(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.FlashC,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--flash=Blue", "--maxbrightness=100", "--minbrightness=10", "--time=0.3", "--interval=1", "--flashcycle=4", "--count=3" }, DisplayName = "--verbose --flash=Blue --maxbrightness=100 --minbrightness=10 --time=0.3 --interval=1 --flashcycle=4 --count=3")]
+        [DataTestMethod]
+        public void Flash_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bflash\\b", RegexOptions.IgnoreCase),"Expect stdout includes flash config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bblue\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b100\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b0?\\.3(0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes on/off time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b4(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes cycle time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b2\\b", RegexOptions.IgnoreCase),"Expect stdout includes flash count");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.FlashC,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
