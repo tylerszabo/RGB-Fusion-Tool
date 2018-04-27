@@ -18,6 +18,9 @@ namespace RGBFusionTool
         private class ColorCycleArgParserContext : ArgParserContext
         {
             public byte Brightness { get; set; }
+            public byte MinBrightness { get; set; }
+            public byte NumColors { get; set; }
+            public bool Pulse { get; set; }
 
             private double? seconds;
             public double? Seconds
@@ -33,6 +36,9 @@ namespace RGBFusionTool
             {
                 seconds = null;
                 Brightness = 100;
+                MinBrightness = 0;
+                NumColors = 7;
+                Pulse = false;
             }
         }
 
@@ -52,7 +58,10 @@ namespace RGBFusionTool
             };
             ExtraOptions = new OptionSet
             {
-                { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
+                { "b|brightness|maxbrightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
+                { "cyclepulse", "(optional) pulse between colors", v => context.Pulse = true },
+                { "minbrightness=", "(optional) minimum brightness (during pulse) (0-100)", (byte b) => context.MinBrightness = b },
+                { "numcolors=", "(optional) number of colors to cycle (1-7 -> ROYGBIV)", (byte b) => context.NumColors = b },
                 { "<>", v => throw new InvalidOperationException("Unsupported option") }
             };
         }
@@ -66,7 +75,7 @@ namespace RGBFusionTool
 
             TimeSpan cycleTime = TimeSpan.FromSeconds(context.Seconds ?? 1);
 
-            return new ColorCycleLedSetting(context.Brightness, 0, cycleTime);
+            return new ColorCycleLedSetting(context.Brightness, context.MinBrightness, cycleTime, context.NumColors, context.Pulse);
         }
     }
 }

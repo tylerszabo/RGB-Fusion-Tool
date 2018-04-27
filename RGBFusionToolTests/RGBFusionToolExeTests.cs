@@ -243,7 +243,7 @@ namespace RGBFusionToolTests.Tests
         [DataRow(new string[] { "--colorcycle=1.0" }, DisplayName = "--colorcycle=1.0")]
         [DataRow(new string[] { "--cycle=1.0" }, DisplayName = "--cycle=1.0")]
         [DataTestMethod]
-        public void ColorCycle_1s(string[] args)
+        public void ColorCycleA_1s(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -260,7 +260,7 @@ namespace RGBFusionToolTests.Tests
         [DataRow(new string[] { "--verbose", "--colorcycle" }, DisplayName = "--verbose --colorcycle")]
         [DataRow(new string[] { "--colorcycle", "--verbose" }, DisplayName = "--colorcycle --verbose")]
         [DataTestMethod]
-        public void ColorCycle_verbose(string[] args)
+        public void ColorCycleA_1s_verbose(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -277,7 +277,7 @@ namespace RGBFusionToolTests.Tests
         [DataRow(new string[] { "--colorcycle=4.0" }, DisplayName = "--colorcycle=4.0")]
         [DataRow(new string[] { "--cycle=4.0" }, DisplayName = "--cycle=4.0")]
         [DataTestMethod]
-        public void ColorCycle_4s(string[] args)
+        public void ColorCycleA_4s(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -294,7 +294,7 @@ namespace RGBFusionToolTests.Tests
         [DataRow(new string[] { "--colorcycle=.5" }, DisplayName = "--colorcycle=.5")]
         [DataRow(new string[] { "--cycle=.5" }, DisplayName = "--cycle=.5")]
         [DataTestMethod]
-        public void ColorCycle_500ms(string[] args)
+        public void ColorCycleA_500ms(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -303,6 +303,46 @@ namespace RGBFusionToolTests.Tests
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_500ms,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--colorcycle=1.5", "--minbrightness=20", "--numcolors=2", "--cyclepulse" }, DisplayName = "--colorcycle=1.5 --minbrightness=20 --numcolors=2 --cyclepulse")]
+        [DataRow(new string[] { "--colorcycle=1.5", "--brightness=100", "--minbrightness=20", "--numcolors=2", "--cyclepulse" }, DisplayName = "--colorcycle=1.5 --brightness=100 --minbrightness=20 --numcolors=2 --cyclepulse")]
+        [DataRow(new string[] { "--colorcycle=1.5", "--maxbrightness=100", "--minbrightness=20", "--numcolors=2", "--cyclepulse" }, DisplayName = "--colorcycle=1.5 --maxbrightness=100 --minbrightness=20 --numcolors=2 --cyclepulse")]
+        [DataRow(new string[] { "--maxbrightness=100", "--minbrightness=20", "--numcolors=2", "--cyclepulse", "--colorcycle=1.5" }, DisplayName = "--maxbrightness=100 --minbrightness=20 --numcolors=2 --cyclepulse --colorcycle=1.5")]
+        [DataTestMethod]
+        public void ColorCycleB(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleB,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--colorcycle=1.5", "--minbrightness=20", "--numcolors=2", "--cyclepulse" }, DisplayName = "--verbose --colorcycle=1.5 --minbrightness=20 --numcolors=2 --cyclepulse")]
+        [DataTestMethod]
+        public void ColorCycleB_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b(color ?)?cycle\\b.*\\b1.5\\s?s\\b", RegexOptions.IgnoreCase), "Expect stdout includes mode and time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bpulse\\b", RegexOptions.IgnoreCase), "Expect stdout to note pulse option");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b20\\b", RegexOptions.IgnoreCase), "Expect stdout to note min brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bred\\b", RegexOptions.IgnoreCase), "Expect stdout to note red");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\borange\\b", RegexOptions.IgnoreCase), "Expect stdout to note orange");
+            StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\byellow\\b", RegexOptions.IgnoreCase), "Expect stdout to note yellow");
+            StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bgreen\\b", RegexOptions.IgnoreCase), "Expect stdout to note green");
+            StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bblue\\b", RegexOptions.IgnoreCase), "Expect stdout to note blue");
+            StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bindigo\\b", RegexOptions.IgnoreCase), "Expect stdout to note indigo");
+            StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bviolet\\b", RegexOptions.IgnoreCase), "Expect stdout to note violet");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleB,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 

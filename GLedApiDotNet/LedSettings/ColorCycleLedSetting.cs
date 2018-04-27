@@ -7,12 +7,13 @@
 // You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Drawing;
 
 namespace GLedApiDotNet.LedSettings
 {
     public class ColorCycleLedSetting : LedSetting
     {
+        private static readonly string[] COLORNAMES = { "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet" };
+
         public ColorCycleLedSetting(byte maxBrightness, byte minBrightness, ushort transitionTime, byte numColors = 7, bool pulse = false)
         {
             this.Mode = Modes.ColorCycle;
@@ -39,10 +40,23 @@ namespace GLedApiDotNet.LedSettings
             this.SetTime0(transitionTime);
         }
 
+        public TimeSpan TransitionTime => TimeSpan.FromMilliseconds(((double)Time0) * 10);
+        public bool Pulse => (CtrlValue1 == 1);
+        public byte NumColors => CtrlValue0;
+
         public override string ToString()
         {
-            TimeSpan t = TimeSpan.FromMilliseconds(((double)Time0) * 10);
-            return string.Format("Color Cycle: Brightness={0}, Transition time={1}s", MaxBrightness, t.TotalSeconds, CtrlValue1 == 1 ? ", Pulse" : "");
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.AppendFormat("Color Cycle: Brightness={0}, Transition time={1}s", MaxBrightness, TransitionTime.TotalSeconds);
+            if (Pulse)
+            {
+                sb.AppendFormat(", Pulse, MinBrightness={0}", MinBrightness);
+            }
+            if (NumColors != 7)
+            {
+                sb.AppendFormat(", Colors={0}", string.Join(",", COLORNAMES, 0, NumColors));
+            }
+            return sb.ToString();
         }
     }
 }
