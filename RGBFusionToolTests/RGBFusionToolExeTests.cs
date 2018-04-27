@@ -71,6 +71,7 @@ namespace RGBFusionToolTests.Tests
 
                 "static",
                 "colorcycle",
+                "pulse",
 
                 "verbose",
                 "list",
@@ -343,6 +344,39 @@ namespace RGBFusionToolTests.Tests
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleB,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=10" }, DisplayName = "--pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
+        [DataTestMethod]
+        public void Pulse(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=10" }, DisplayName = "--verbose --pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
+        [DataTestMethod]
+        public void Pulse_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bpulse\\b", RegexOptions.IgnoreCase),"Expect stdout includes pulse config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bred\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b75\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b25\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b30(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade on time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b10(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade off time");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 

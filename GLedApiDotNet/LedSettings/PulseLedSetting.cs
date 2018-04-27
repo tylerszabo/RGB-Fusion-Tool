@@ -34,5 +34,14 @@ namespace GLedApiDotNet.LedSettings
             this.SetTime0(fadeOnTime);
             this.SetTime1(fadeOffTime);
         }
+
+        public TimeSpan FadeOnTime => TimeSpan.FromMilliseconds(((double)Time0) * 10);
+        public TimeSpan FadeOffTime => TimeSpan.FromMilliseconds(((double)Time1) * 10);
+
+        public override string ToString()
+        {
+            return string.Format("Pulse: Color={0}, MaxBrightness={1}, MinBrightness={2}, FadeOnTime={3}s, FadeOffTime={4}s",
+                Color, MaxBrightness, MinBrightness, FadeOnTime.TotalSeconds, FadeOffTime.TotalSeconds);
+        }
     }
 }

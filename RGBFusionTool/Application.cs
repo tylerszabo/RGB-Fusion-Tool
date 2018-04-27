@@ -99,7 +99,8 @@ namespace RGBFusionTool
             ledSettingArgParsers = new List<LedSettingArgParser>
             {
                 new StaticColorArgParser(),
-                new ColorCycleArgParser()
+                new ColorCycleArgParser(),
+                new PulseArgParser()
             };
 
             helpOptionSets = new List<OptionSet>
