@@ -53,7 +53,7 @@ namespace RGBFusionTool.ArgParsers
             ExtraOptions = new OptionSet
             {
                 { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
-                { "<>", v => throw new InvalidOperationException("Unsupported option") }
+                { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
 

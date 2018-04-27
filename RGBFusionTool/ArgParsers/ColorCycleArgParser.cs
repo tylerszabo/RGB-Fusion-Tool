@@ -62,7 +62,7 @@ namespace RGBFusionTool.ArgParsers
                 { "cyclepulse", "(optional) pulse between colors", v => context.Pulse = true },
                 { "minbrightness=", "(optional) minimum brightness (during pulse) (0-100)", (byte b) => context.MinBrightness = b },
                 { "numcolors=", "(optional) number of colors to cycle (1-7 -> ROYGBIV)", (byte b) => context.NumColors = b },
-                { "<>", v => throw new InvalidOperationException("Unsupported option") }
+                { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
 

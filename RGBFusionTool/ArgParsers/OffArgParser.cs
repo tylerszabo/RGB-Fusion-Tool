@@ -41,7 +41,7 @@ namespace RGBFusionTool.ArgParsers
             };
             ExtraOptions = new OptionSet
             {
-                { "<>", v => throw new InvalidOperationException("Unsupported option") }
+                { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
 

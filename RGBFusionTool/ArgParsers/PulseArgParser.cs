@@ -62,7 +62,7 @@ namespace RGBFusionTool.ArgParsers
                 { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
                 { "fadeon=", "(optional) fade on time ({SECONDS})", (double d) => context.FadeOn = d },
                 { "fadeoff=", "(optional) fade off time ({SECONDS})", (double d) => context.FadeOff = d },
-                { "<>", v => throw new InvalidOperationException("Unsupported option") }
+                { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
 
