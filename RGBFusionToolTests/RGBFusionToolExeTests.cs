@@ -72,6 +72,7 @@ namespace RGBFusionToolTests.Tests
                 "static",
                 "colorcycle",
                 "pulse",
+                "off",
 
                 "verbose",
                 "list",
@@ -79,7 +80,7 @@ namespace RGBFusionToolTests.Tests
             };
             foreach (string option in supportedOptions)
             {
-                Regex regex = new Regex(string.Format("\\b{0}\\b", option));
+                Regex regex = new Regex(string.Format("--{0}\\b", option));
                 StringAssert.Matches(stdout.ToString(), regex, "Expect stdout shows usage");
             }
         }
@@ -377,6 +378,34 @@ namespace RGBFusionToolTests.Tests
 
             TestHelper.AssertAllLeds(mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--off" }, DisplayName = "--off")]
+        [DataTestMethod]
+        public void Off(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.Off,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--off" }, DisplayName = "--verbose --off")]
+        [DataTestMethod]
+        public void Off_verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\boff\\b", RegexOptions.IgnoreCase),"Expect stdout includes off");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.Off,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 

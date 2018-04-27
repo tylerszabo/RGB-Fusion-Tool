@@ -11,7 +11,7 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool
+namespace RGBFusionTool.ArgParsers
 {
     class PulseArgParser : LedSettingArgParser
     {

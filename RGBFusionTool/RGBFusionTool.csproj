@@ -76,12 +76,13 @@ You should have received a copy of the GNU General Public License along with thi
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="ColorCycleArgParser.cs" />
-    <Compile Include="LedSettingArgParser.cs" />
+    <Compile Include="ArgParsers\ColorCycleArgParser.cs" />
+    <Compile Include="ArgParsers\LedSettingArgParser.cs" />
+    <Compile Include="ArgParsers\OffArgParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PulseArgParser.cs" />
+    <Compile Include="ArgParsers\PulseArgParser.cs" />
     <Compile Include="RGBFusionMain.cs" />
-    <Compile Include="StaticColorArgParser.cs" />
+    <Compile Include="ArgParsers\StaticColorArgParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

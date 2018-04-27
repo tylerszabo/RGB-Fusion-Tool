@@ -12,7 +12,7 @@ using System.Drawing;
 using GLedApiDotNet.LedSettings;
 using Mono.Options;
 
-namespace RGBFusionTool
+namespace RGBFusionTool.ArgParsers
 {
     abstract class LedSettingArgParser
     {

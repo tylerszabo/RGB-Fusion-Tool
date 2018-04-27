@@ -11,48 +11,36 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool
+namespace RGBFusionTool.ArgParsers
 {
-    class StaticColorArgParser : LedSettingArgParser
+    class OffArgParser : LedSettingArgParser
     {
-        private class StaticColorArgParserContext : ArgParserContext
+        private class OffArgParserContext : ArgParserContext
         {
-            public byte Brightness { get; set; }
-
-            private string colorString;
-            public string ColorString
+            public void Set()
             {
-                get => colorString; set
-                {
-                    Valid = true;
-                    colorString = value;
-                }
+                Valid = true;
             }
 
-            protected override void SetDefaults()
-            {
-                colorString = null;
-                Brightness = 100;
-            }
+            protected override void SetDefaults() {}
         }
 
-        StaticColorArgParserContext context;
+        OffArgParserContext context;
 
-        private StaticColorArgParser(StaticColorArgParserContext context) : base(context)
+        private OffArgParser(OffArgParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public StaticColorArgParser() : this(new StaticColorArgParserContext ())
+        public OffArgParser() : this(new OffArgParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Static color" },
-                { "c|color|static=", "set static color to {COLOR}", v => context.ColorString = v },
+                { "Off" },
+                { "off", "turn off", v => context.Set() },
             };
             ExtraOptions = new OptionSet
             {
-                { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
                 { "<>", v => throw new InvalidOperationException("Unsupported option") }
             };
         }
@@ -64,7 +52,7 @@ namespace RGBFusionTool
                 return null;
             }
 
-            return new StaticLedSetting(GetColor(context.ColorString), context.Brightness);
+            return new OffLedSetting();
         }
     }
 }

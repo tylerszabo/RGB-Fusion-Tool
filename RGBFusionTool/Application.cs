@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using Mono.Options;
 using System.Collections.Generic;
+using RGBFusionTool.ArgParsers;
 
 namespace RGBFusionTool
 {
@@ -100,7 +101,8 @@ namespace RGBFusionTool
             {
                 new StaticColorArgParser(),
                 new ColorCycleArgParser(),
-                new PulseArgParser()
+                new PulseArgParser(),
+                new OffArgParser()
             };
 
             helpOptionSets = new List<OptionSet>

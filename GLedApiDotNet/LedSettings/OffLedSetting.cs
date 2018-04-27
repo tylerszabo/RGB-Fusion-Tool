@@ -16,5 +16,10 @@ namespace GLedApiDotNet.LedSettings
             : base(Color.Black, 0)
         {
         }
+
+        public override string ToString()
+        {
+            return "Off";
+        }
     }
 }
