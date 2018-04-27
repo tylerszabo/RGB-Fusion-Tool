@@ -306,6 +306,24 @@ namespace GLedApiDotNetTests.Tests
                 1,      // CtrlVal0
                 0 };    // CtrlVal1
 
+            public static readonly byte[] FlashC = {
+                0x00,   // Reserved0
+                5,      // LedMode
+                100,    // MaxBrightness
+                10,     // MinBrightness
+                0xFF,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x1E,   // wTime0
+                0x00,   // wTime0
+                0x64,   // wTime1
+                0x00,   // wTime1
+                0x90,   // wTime2
+                0x01,   // wTime2
+                3,      // CtrlVal0
+                0 };    // CtrlVal1
+
             public static readonly byte[] TransitionA = {
                 0x00,   // Reserved0
                 8,      // LedMode
@@ -315,8 +333,8 @@ namespace GLedApiDotNetTests.Tests
                 0x00,   // dwColor GG
                 0xFF,   // dwColor RR
                 0x00,   // dwColor WW
-                0x60,   // wTime0
-                0xEA,   // wTime0
+                0x70,   // wTime0
+                0x17,   // wTime0
                 0,      // wTime1
                 0,      // wTime1
                 0,      // wTime2
@@ -532,6 +550,24 @@ namespace GLedApiDotNetTests.Tests
         }
 
         [TestMethod]
+        public void FlashA2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.FlashA,
+                new FlashLedSetting(Color.Red, 100, 20, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(40), 2).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void FlashC()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.FlashC,
+                new FlashLedSetting(Color.Blue, 100, 10, TimeSpan.FromSeconds(.3), TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(4), 3).ToByteArray()
+            );
+        }
+
+        [TestMethod]
         public void FlashB()
         {
             TestHelper.AssertLedSettingsEqual(
@@ -551,7 +587,7 @@ namespace GLedApiDotNetTests.Tests
 
         [DataRow(1, 1, 2, 1, DisplayName = "!(onoff < interval)")]
         [DataRow(.25, 1, 1, 2, DisplayName = "!(count * interval <= cycle)")]
-        [DataRow(.25, 1, 66, 1, DisplayName = "cycle too long")]
+        [DataRow(.25, 1, 660, 1, DisplayName = "cycle too long")]
         [DataRow(0, 0, -1, 1, DisplayName = "cycle negative time")]
         [DataTestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -590,13 +626,14 @@ namespace GLedApiDotNetTests.Tests
         {
             TestHelper.AssertLedSettingsEqual(
                 SettingByteArrays.TransitionB,
-                new TransitionLedSetting(Color.Red, 100, 20, TimeSpan.FromSeconds(1.5)).ToByteArray()
+                new TransitionLedSetting(Color.Red, 100, 20, TimeSpan.FromSeconds(15)).ToByteArray()
             );
         }
 
-        [DataRow(65535.6)]
-        [DataRow(65535.5)]
-        [DataRow(90000.0)]
+        [DataRow(655356)]
+        [DataRow(655355)]
+        [DataRow(655351)]
+        [DataRow(900000)]
         [DataTestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TransitionException(double time)

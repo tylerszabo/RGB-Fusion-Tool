@@ -26,7 +26,7 @@ namespace GLedApiDotNet.LedSettings
         public TransitionLedSetting(Color color, byte maxBrightness, byte minBrightness, TimeSpan transitionTime)
             : this(color, maxBrightness, minBrightness, 0)
         {
-            this.SetTime0(transitionTime);
+            this.TimeSpan0 = transitionTime;
         }
     }
 }

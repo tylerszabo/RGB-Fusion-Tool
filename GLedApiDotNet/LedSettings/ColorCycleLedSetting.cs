@@ -34,13 +34,10 @@ namespace GLedApiDotNet.LedSettings
         public ColorCycleLedSetting(byte maxBrightness, byte minBrightness, TimeSpan transitionTime, byte numColors = 7, bool pulse = false)
             : this(maxBrightness, minBrightness, 0, numColors, pulse)
         {
-            // Undocumented behavior - each transition takes 10 seconds
-            transitionTime = TimeSpan.FromMilliseconds(transitionTime.TotalMilliseconds / 10);
-
-            this.SetTime0(transitionTime);
+            this.TimeSpan0 = transitionTime;
         }
 
-        public TimeSpan TransitionTime => TimeSpan.FromMilliseconds(((double)Time0) * 10);
+        public TimeSpan TransitionTime => TimeSpan0;
         public bool Pulse => (CtrlValue1 == 1);
         public byte NumColors => CtrlValue0;
 

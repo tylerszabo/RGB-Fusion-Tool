@@ -89,32 +89,23 @@ namespace GLedApiDotNet.LedSettings
         protected ushort Time1 { get => time1; set => time1 = value; }
         protected ushort Time2 { get => time2; set => time2 = value; }
 
-        protected void SetTime0(TimeSpan value)
+        // Undocumented behavior - API time values are 1/100ths of seconds, not milliseconds
+        private static ushort SetTime(TimeSpan value)
         {
-            if (!(value.TotalMilliseconds >= 0 && value.TotalMilliseconds <= 65535))
+            if (!(value.TotalMilliseconds >= 0 && value.TotalMilliseconds <= 655350))
             {
-                throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 65535 milliseconds");
+                throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 655350 milliseconds");
             }
-            this.time0 = (ushort)value.TotalMilliseconds;
+            TimeSpan realValue = TimeSpan.FromMilliseconds(value.TotalMilliseconds / 10.0);
+            return (ushort)realValue.TotalMilliseconds;
         }
 
-        protected void SetTime1(TimeSpan value)
-        {
-            if (!(value.TotalMilliseconds >= 0 && value.TotalMilliseconds <= 65535))
-            {
-                throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 65535 milliseconds");
-            }
-            this.time1 = (ushort)value.TotalMilliseconds;
-        }
+        // Undocumented behavior - API time values are 1/100ths of seconds, not milliseconds
+        private static TimeSpan GetTime(ushort value) => TimeSpan.FromMilliseconds(((double)value) * 10);
 
-        protected void SetTime2(TimeSpan value)
-        {
-            if (!(value.TotalMilliseconds >= 0 && value.TotalMilliseconds <= 65535))
-            {
-                throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 65535 milliseconds");
-            }
-            this.time2 = (ushort)value.TotalMilliseconds;
-        }
+        protected TimeSpan TimeSpan0 { get => GetTime(time0); set => time0 = SetTime(value); }
+        protected TimeSpan TimeSpan1 { get => GetTime(time1); set => time1 = SetTime(value); }
+        protected TimeSpan TimeSpan2 { get => GetTime(time2); set => time2 = SetTime(value); }
 
         protected byte CtrlValue0 { get => ctrlValue0; set => ctrlValue0 = value; }
         protected byte CtrlValue1 { get => ctrlValue1; set => ctrlValue1 = value; }

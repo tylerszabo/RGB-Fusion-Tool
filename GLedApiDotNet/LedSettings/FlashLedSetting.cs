@@ -62,9 +62,9 @@ namespace GLedApiDotNet.LedSettings
         public FlashLedSetting(Color color, byte maxBrightness, byte minBrightness, TimeSpan lightOnOffTime, TimeSpan intervalTime, TimeSpan cycleTime, byte count)
             : this(color, maxBrightness, minBrightness, count)
         {
-            this.SetTime0(lightOnOffTime);
-            this.SetTime1(intervalTime);
-            this.SetTime2(cycleTime);
+            this.TimeSpan0 = lightOnOffTime;
+            this.TimeSpan1 = intervalTime;
+            this.TimeSpan2 = cycleTime;
 
             CheckRanges();
         }

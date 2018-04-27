@@ -27,16 +27,12 @@ namespace GLedApiDotNet.LedSettings
         public PulseLedSetting(Color color, byte maxBrightness, byte minBrightness, TimeSpan fadeOnTime, TimeSpan fadeOffTime)
             : this(color, maxBrightness, minBrightness, 0, 0)
         {
-            // Undocumented behavior - each transition takes 10 seconds
-            fadeOnTime = TimeSpan.FromMilliseconds(fadeOnTime.TotalMilliseconds / 10);
-            fadeOffTime = TimeSpan.FromMilliseconds(fadeOffTime.TotalMilliseconds / 10);
-
-            this.SetTime0(fadeOnTime);
-            this.SetTime1(fadeOffTime);
+            this.TimeSpan0 = fadeOnTime;
+            this.TimeSpan1 = fadeOffTime;
         }
 
-        public TimeSpan FadeOnTime => TimeSpan.FromMilliseconds(((double)Time0) * 10);
-        public TimeSpan FadeOffTime => TimeSpan.FromMilliseconds(((double)Time1) * 10);
+        public TimeSpan FadeOnTime => TimeSpan0;
+        public TimeSpan FadeOffTime => TimeSpan1;
 
         public override string ToString()
         {
