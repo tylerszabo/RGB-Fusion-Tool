@@ -55,6 +55,15 @@ You should have received a copy of the GNU General Public License along with thi
     <Compile Include="IMotherboardLedLayout.cs" />
     <Compile Include="IMotherboardLedSettings.cs" />
     <Compile Include="IRGBFusionMotherboard.cs" />
+    <Compile Include="LedSettings\DigitalI.cs" />
+    <Compile Include="LedSettings\DigitalH.cs" />
+    <Compile Include="LedSettings\DigitalG.cs" />
+    <Compile Include="LedSettings\DigitalF.cs" />
+    <Compile Include="LedSettings\DigitalE.cs" />
+    <Compile Include="LedSettings\DigitalD.cs" />
+    <Compile Include="LedSettings\DigitalC.cs" />
+    <Compile Include="LedSettings\DigitalB.cs" />
+    <Compile Include="LedSettings\DigitalA.cs" />
     <Compile Include="LedSettings\TransitionLedSetting.cs" />
     <Compile Include="LedSettings\ColorCycleLedSetting.cs" />
     <Compile Include="LedSettings\FlashLedSetting.cs" />
