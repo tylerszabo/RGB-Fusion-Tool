@@ -26,6 +26,7 @@ namespace RGBFusionTool
         {
             public bool flag_Help;
             public bool flag_List;
+            public bool flag_Version;
             public int verbosity;
 
             public ApplicationContext()
@@ -37,6 +38,7 @@ namespace RGBFusionTool
             {
                 flag_Help = false;
                 flag_List = false;
+                flag_Version = false;
                 verbosity = 0;
             }
         }
@@ -72,6 +74,7 @@ namespace RGBFusionTool
                 { "v|verbose", v => context.verbosity++ },
                 { "l|list", "list zones", v => context.flag_List = true },
                 { "?|h|help", "show help and exit", v => context.flag_Help = true },
+                { "version", "show version information and exit", v => context.flag_Version = true },
                 { "" }
             };
 
@@ -129,6 +132,30 @@ namespace RGBFusionTool
             }
         }
 
+        private void ShowVersion(TextWriter o)
+        {
+            string gplNotice =
+@"This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.";
+
+            o.WriteLine("RGB Fusion Tool {0}", System.Reflection.Assembly.GetAssembly(this.GetType()).GetName().Version);
+            o.WriteLine("Copyright (C) 2018  Tyler Szabo");
+            o.WriteLine();
+            o.WriteLine(gplNotice);
+            o.WriteLine();
+            o.WriteLine("Source: https://github.com/tylerszabo/RGB-Fusion-Tool");
+        }
+
         public void Main(string[] args)
         {
             context.SetDefaults();
@@ -140,6 +167,12 @@ namespace RGBFusionTool
                 if (context.flag_Help)
                 {
                     ShowHelp(stdout);
+                    return;
+                }
+
+                if (context.flag_Version)
+                {
+                    ShowVersion(stdout);
                     return;
                 }
 

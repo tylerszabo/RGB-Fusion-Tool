@@ -13,11 +13,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RGBFusionTool")]
+[assembly: AssemblyTitle("RGB Fusion Tool")]
 [assembly: AssemblyDescription("Tool for Gigabyte's RGB Fusion motherboard LEDs")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RGBFusionTool")]
+[assembly: AssemblyProduct("RGB Fusion Tool")]
 [assembly: AssemblyCopyright("Copyright © 2018 Tyler Szabo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GLedApiDotNet")]
-[assembly: AssemblyDescription(".NET wrapper for Gigabyte's RGB Fusion GLedApi.dll")]
+[assembly: AssemblyDescription(".NET wrapper for Gigabyte's RGB Fusion GLedApi.dll - Source: https://github.com/tylerszabo/RGB-Fusion-Tool")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GLedApiDotNet")]
