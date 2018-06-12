@@ -59,6 +59,13 @@ Set zones 0 through 3 to color cycle at different speeds (with verbose output)
 RGBFusionTool.exe --verbose --zone=0 --cycle=32 --zone=1 --cycle=16 --zone=2 --cycle=8 --zone=3 --cycle=4
 ```
 
+## Troubleshooting
+
+- Verify you're using a supported [motherboard](https://www.gigabyte.com/mb/rgb/)
+- Attempt running the tool in an elevated command prompt
+- Ensure all Gigabyte SDK DLLs are present (see *Dependencies*)
+- Power down the motherboard completely (such that the power supply is shut off or unplugged) and power isn't coming in through USB. Wait ~20 seconds for the board to discharge. (There's an issue where the controller can get stuck and only a complete power down seems to reset it.)
+
 ## Legal
 
 ### Copyright
