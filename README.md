@@ -1,5 +1,10 @@
 # RGB Fusion Tool
 
+## Installation
+
+You can build RGB Fusion Tool locally (see below), install it as a [Chocolatey package](https://chocolatey.org/packages/rgbfusiontool
+) (`choco install rgbfusiontool`), or extract one of the builds listed on [GitHub Releases](https://github.com/tylerszabo/RGB-Fusion-Tool/releases).
+
 ## Dependencies
 
 Get `GLedApi.dll`, `ycc.dll`, and `layout.ini` from [Gigabyte's RGB Fusion SDK](https://www.gigabyte.com/mb/rgb/sdk)
