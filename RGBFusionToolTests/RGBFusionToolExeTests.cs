@@ -77,12 +77,39 @@ namespace RGBFusionToolTests.Tests
 
                 "verbose",
                 "list",
-                "help"
+                "help",
+                "version"
             };
             foreach (string option in supportedOptions)
             {
                 Regex regex = new Regex(string.Format("--{0}\\b", option));
                 StringAssert.Matches(stdout.ToString(), regex, "Expect stdout shows usage");
+            }
+        }
+
+        [DataRow(new string[] { "--version" }, DisplayName = "--version")]
+        [DataTestMethod]
+        public void Version(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+
+            string[] requiredPatterns = {
+                "\\bRGB Fusion Tool\\b\\s+\\b\\d+(\\.\\d+){1,3}\\b", // name and version
+                "\\b[cC]opyright\\b\\s+(\\([cC]\\)\\s+)\\b2018\\b\\s+\\bTyler Szabo\\b", // copyright year and name
+
+                "\\bGNU General Public License\\b",
+                "\\bFree Software Foundation\\b",
+                "\\bversion 3\\b",
+                "\\bWITHOUT ANY WARRANTY\\b",
+                "https://www.gnu.org/licenses/"
+            };
+            foreach (string pattern in requiredPatterns)
+            {
+                Regex regex = new Regex(pattern);
+                StringAssert.Matches(stdout.ToString(), regex, "Expect stdout shows version information");
             }
         }
 
