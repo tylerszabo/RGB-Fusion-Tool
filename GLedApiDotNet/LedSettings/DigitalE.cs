@@ -17,6 +17,8 @@ namespace GLedApiDotNet.LedSettings
         {
             this.Mode = Modes.DigitalModeE;
 
+            this.Color = color;
+
             this.SetBrightness(maxBrightness, minBrightness);
 
             this.Time0 = cycleTime;
