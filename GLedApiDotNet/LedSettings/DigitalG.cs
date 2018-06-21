@@ -35,9 +35,9 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan0 = stepInterval;
         }
 
-        public TimeSpan StepInterval => TimeSpan0;
+        protected TimeSpan StepInterval => TimeSpan0;
 
-        public byte DimSpeed => CtrlValue0;
+        protected byte DimSpeed => CtrlValue0;
 
         public override string ToString()
         {

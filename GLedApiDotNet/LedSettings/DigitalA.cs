@@ -35,8 +35,8 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan0 = speed;
         }
 
-        public TimeSpan Speed => TimeSpan0;
-        public Direction _Direction => (Direction)CtrlValue0;
+        protected TimeSpan Speed => TimeSpan0;
+        protected Direction _Direction => (Direction)CtrlValue0;
 
         public override string ToString()
         {

@@ -31,8 +31,8 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan1 = fadeOffTime;
         }
 
-        public TimeSpan FadeOnTime => TimeSpan0;
-        public TimeSpan FadeOffTime => TimeSpan1;
+        protected TimeSpan FadeOnTime => TimeSpan0;
+        protected TimeSpan FadeOffTime => TimeSpan1;
 
         public override string ToString()
         {

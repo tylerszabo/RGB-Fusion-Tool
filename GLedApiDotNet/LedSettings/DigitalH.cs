@@ -28,7 +28,7 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan0 = speed;
         }
 
-        public TimeSpan Speed => TimeSpan0;
+        protected TimeSpan Speed => TimeSpan0;
 
         public override string ToString()
         {

@@ -28,7 +28,7 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan0 = cycleTime;
         }
 
-        public TimeSpan CycleTime => TimeSpan0;
+        protected TimeSpan CycleTime => TimeSpan0;
 
         public override string ToString()
         {
