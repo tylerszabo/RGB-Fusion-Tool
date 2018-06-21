@@ -37,9 +37,9 @@ namespace GLedApiDotNet.LedSettings
             this.TimeSpan0 = transitionTime;
         }
 
-        public TimeSpan TransitionTime => TimeSpan0;
-        public bool Pulse => (CtrlValue1 == 1);
-        public byte NumColors => CtrlValue0;
+        protected TimeSpan TransitionTime => TimeSpan0;
+        protected bool Pulse => (CtrlValue1 == 1);
+        protected byte NumColors => CtrlValue0;
 
         public override string ToString()
         {

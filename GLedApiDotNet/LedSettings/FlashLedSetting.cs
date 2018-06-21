@@ -69,10 +69,10 @@ namespace GLedApiDotNet.LedSettings
             CheckRanges();
         }
 
-        public TimeSpan OnOffTime => TimeSpan0;
-        public TimeSpan IntervalTime => TimeSpan1;
-        public TimeSpan CycleTime => TimeSpan2;
-        public byte Count => CtrlValue0;
+        protected TimeSpan OnOffTime => TimeSpan0;
+        protected TimeSpan IntervalTime => TimeSpan1;
+        protected TimeSpan CycleTime => TimeSpan2;
+        protected byte Count => CtrlValue0;
 
         public override string ToString()
         {
