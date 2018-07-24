@@ -107,6 +107,8 @@ namespace RGBFusionTool
                 new PulseArgParser(),
                 new FlashArgParser(),
                 new DigitalAArgParser(),
+                new DigitalBArgParser(),
+                new DigitalCArgParser(),
                 new OffArgParser(),
             };
 

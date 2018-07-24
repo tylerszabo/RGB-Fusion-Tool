@@ -40,7 +40,7 @@ namespace GLedApiDotNet.LedSettings
 
         public override string ToString()
         {
-            return string.Format("DigitalA: MaxBrightness={0}, MinBrightness={1}, Speed={2}s, Direction={3}", Color, MaxBrightness, MinBrightness, Speed.TotalSeconds, _Direction);
+            return string.Format("DigitalA: MaxBrightness={0}, MinBrightness={1}, Speed={2}s, Direction={3}", MaxBrightness, MinBrightness, Speed.TotalSeconds, _Direction);
         }
     }
 }
