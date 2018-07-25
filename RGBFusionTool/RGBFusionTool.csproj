@@ -80,6 +80,7 @@ You should have received a copy of the GNU General Public License along with thi
     <Compile Include="ArgParsers\DigitalBArgParser.cs" />
     <Compile Include="ArgParsers\DigitalAArgParser.cs" />
     <Compile Include="ArgParsers\DigitalCArgParser.cs" />
+    <Compile Include="ArgParsers\DigitalDArgParser.cs" />
     <Compile Include="ArgParsers\FlashArgParser.cs" />
     <Compile Include="ArgParsers\LedSettingArgParser.cs" />
     <Compile Include="ArgParsers\OffArgParser.cs" />

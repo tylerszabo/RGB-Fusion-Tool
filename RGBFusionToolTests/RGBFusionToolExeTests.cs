@@ -679,6 +679,74 @@ namespace RGBFusionToolTests.Tests
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
+        [DataRow(new string[] { "--digital-d=Blue", "--maxbrightness=80", "--speed=4" }, DisplayName = "--digital-d=Blue --maxbrightness=80 --speed=4")]
+        [DataRow(new string[] { "--digital-d=Blue", "--maxbrightness=80", "--minbrightness=0", "--speed=4" }, DisplayName = "--digital-d=Blue --maxbrightness=80 --minbrightness=0 --speed=4")]
+        [DataTestMethod]
+        public void DigitalD1(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD1,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--digital-d=Blue", "--maxbrightness=80", "--speed=4" }, DisplayName = "--verbose --digital-d=Blue --maxbrightness=80 --speed=4")]
+        [DataRow(new string[] { "--verbose", "--digital-d=Blue", "--maxbrightness=80", "--minbrightness=0", "--speed=4" }, DisplayName = "--verbose --digital-d=Blue --maxbrightness=80 --minbrightness=0 --speed=4")]
+        [DataTestMethod]
+        public void DigitalD1Verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitald\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bblue\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b80\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b4(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD1,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--digital-d=Crimson", "--maxbrightness=50", "--minbrightness=10" }, DisplayName = "--digital-d=Crimson --maxbrightness=50 --minbrightness=10")]
+        [DataRow(new string[] { "--digital-d=Crimson", "--maxbrightness=50", "--minbrightness=10", "--speed=1" }, DisplayName = "--digital-d=Crimson --maxbrightness=50 --minbrightness=10 --speed=1")]
+        [DataTestMethod]
+        public void DigitalD2(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD2,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
+        [DataRow(new string[] { "--verbose", "--digital-d=Crimson", "--maxbrightness=50", "--minbrightness=10" }, DisplayName = "--verbose --digital-d=Crimson --maxbrightness=50 --minbrightness=10")]
+        [DataRow(new string[] { "--verbose", "--digital-d=Crimson", "--maxbrightness=50", "--minbrightness=10", "--speed=1" }, DisplayName = "--verbose --digital-d=Crimson --maxbrightness=50 --minbrightness=10 --speed=1")]
+        [DataTestMethod]
+        public void DigitalD2Verbose(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitald\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bcrimson\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b50\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
+
+            TestHelper.AssertAllLeds(mock,
+                GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD2,
+                GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
+        }
+
         [DataRow(new string[] { "--off" }, DisplayName = "--off")]
         [DataTestMethod]
         public void Off(string[] args)
