@@ -10,7 +10,6 @@ using GLedApiDotNet.LedSettings;
 using Mono.Options;
 using System;
 using System.Collections.Generic;
-        //[DataRow(new string[] { "--verbose", "--digital-c=Lime", "--maxbrightness=80", "--minbrightness=0", "--interval=3.5", "--dimcycletime=100" }, DisplayName = "--verbose --digital-c=Lime --maxbrightness=80 --minbrightness=0 --interval=3.5 --dimcycletime=100" )]
 
 namespace RGBFusionTool.ArgParsers
 {
