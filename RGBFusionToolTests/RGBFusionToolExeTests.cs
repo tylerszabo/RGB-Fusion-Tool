@@ -770,7 +770,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitale\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitale\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-e config");
             StringAssert.Matches(stdout.ToString(), new Regex("\\bgreen\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b60\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
@@ -802,7 +802,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitale\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitale\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-e config");
             StringAssert.Matches(stdout.ToString(), new Regex("\\bblue\\b", RegexOptions.IgnoreCase), "Expect stdout includes color");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b70\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b20\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
@@ -834,7 +834,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitalf\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitalf\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-f config");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b90\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b30\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
@@ -867,7 +867,7 @@ namespace RGBFusionToolTests.Tests
             rgbFusionTool.Main(args);
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
-            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitalf\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-d config");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\bdigitalf\\b", RegexOptions.IgnoreCase),"Expect stdout includes digital-f config");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b100\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b6(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
