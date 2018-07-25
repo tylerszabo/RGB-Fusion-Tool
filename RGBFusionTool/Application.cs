@@ -114,6 +114,7 @@ namespace RGBFusionTool
                 new DigitalFArgParser(),
                 new DigitalGArgParser(),
                 new DigitalHArgParser(),
+                new DigitalIArgParser(),
                 new OffArgParser(),
             };
 
