@@ -43,8 +43,7 @@ namespace GLedApiDotNetTests
 		public const int DEFAULT_MAXDIVISIONS = 9;
 
         private bool stateTrackingEnabled;
-        private ControlState state;
-        public ControlState State { get => state; set => state = value; }
+        public ControlState State { get; set; }
 
         public bool IsInitialized
         {
@@ -54,7 +53,7 @@ namespace GLedApiDotNetTests
                 {
                     throw new System.InvalidOperationException("State tracking not enabled");
                 }
-                switch (state)
+                switch (State)
                 {
                     case ControlState.Uninitialized:
                     case ControlState.DoneInitAPI:
@@ -64,19 +63,13 @@ namespace GLedApiDotNetTests
                     case ControlState.DoneSetLedData:
                         return true;
                     default:
-                        throw new System.InvalidOperationException(string.Format("Unexpected state {0}", state));
+                        throw new System.InvalidOperationException(string.Format("Unexpected state {0}", State));
                 }
             }
         }
-
-        private uint nextReturn = Status.ERROR_SUCCESS;
-        public uint NextReturn { set => nextReturn = value; }
-
-        private int maxDivisions = DEFAULT_MAXDIVISIONS;
-        public int MaxDivisions { set => maxDivisions = value; }
-
-        private byte[] ledSettings = null;
-        public byte[] ConfiguredLeds { get => ledSettings; }
+        public uint NextReturn { get; set; } = Status.ERROR_SUCCESS;
+        public int MaxDivisions { get; set; } = DEFAULT_MAXDIVISIONS;
+        public byte[] ConfiguredLeds { get; private set; } = null;
 
         private bool applyCalled = false;
         private int lastApply = 0;
@@ -92,8 +85,7 @@ namespace GLedApiDotNetTests
             }
         }
 
-		private string version = "1.0.0";
-		public string Version { get => version; set => version = value; }
+        public string Version { get; set; } = "1.0.0";
 
         private void AssertState(params ControlState[] expected)
         {
@@ -101,11 +93,11 @@ namespace GLedApiDotNetTests
             {
                 if (expected.Length == 1)
                 {
-                    Assert.AreEqual(expected[0], state);
+                    Assert.AreEqual(expected[0], State);
                 }
                 else
                 {
-                    CollectionAssert.Contains(expected, state);
+                    CollectionAssert.Contains(expected, State);
                 }
             }
         }
@@ -113,7 +105,7 @@ namespace GLedApiDotNetTests
         public GLedApiv1_0_0Mock(bool trackState = false, ControlState initialState = ControlState.Uninitialized)
         {
             stateTrackingEnabled = trackState;
-            state = initialState;
+            State = initialState;
         }
 
         public uint Apply(int iApplyBit)
@@ -122,7 +114,7 @@ namespace GLedApiDotNetTests
 
             applyCalled = true;
             lastApply = iApplyBit;
-            return nextReturn;
+            return NextReturn;
         }
 
         public uint BeatInput(int iCtrl)
@@ -138,21 +130,21 @@ namespace GLedApiDotNetTests
         public uint GetLedLayout(byte[] bytArray, int arySize)
         {
             AssertState(ControlState.DoneGetMaxDivision);
-            state = ControlState.DoneGetLedLayout;
+            State = ControlState.DoneGetLedLayout;
 
             Assert.AreEqual(arySize, bytArray.Length, "arySize == bytArray.Length");
             for (int i = 0; i< bytArray.Length; i++)
             {
                 bytArray[i] = 1; // A_LED
             }
-            return nextReturn;
+            return NextReturn;
         }
 
         public int GetMaxDivision()
         {
             AssertState(ControlState.DoneInitAPI);
-            state = ControlState.DoneGetMaxDivision;
-            return maxDivisions;
+            State = ControlState.DoneGetMaxDivision;
+            return MaxDivisions;
         }
 
         public int GetRGBPinType()
@@ -164,8 +156,8 @@ namespace GLedApiDotNetTests
         {
             Assert.IsTrue(bufSize >= 16, "bufSize >= 16");
 
-            lpBuf.Append(version);
-            return nextReturn;
+            lpBuf.Append(Version);
+            return NextReturn;
         }
 
         public uint Get_IT8295_FwVer(byte[] bytArray, int arySize)
@@ -176,14 +168,14 @@ namespace GLedApiDotNetTests
         public uint InitAPI()
         {
             AssertState(ControlState.Uninitialized);
-            state = ControlState.DoneInitAPI;
-            return nextReturn;
+            State = ControlState.DoneInitAPI;
+            return NextReturn;
         }
 
         public uint IT8295_Reset()
         {
             AssertState(ControlState.DoneGetLedLayout);
-            return nextReturn;
+            return NextReturn;
         }
 
         public int MonocLedCtrlSupport()
@@ -219,12 +211,12 @@ namespace GLedApiDotNetTests
         public uint SetLedData(byte[] bytArray, int arySize)
         {
             AssertState(ControlState.DoneGetLedLayout, ControlState.DoneSetLedData);
-            state = ControlState.DoneSetLedData;
+            State = ControlState.DoneSetLedData;
 
             Assert.AreEqual(arySize, bytArray.Length, "arySize == bytArray.Length");
-            ledSettings = bytArray;
+            ConfiguredLeds = bytArray;
 
-            return nextReturn;
+            return NextReturn;
         }
 
         public bool SetMonocLedMode(int mnoLedMode)

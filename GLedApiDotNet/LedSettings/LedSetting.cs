@@ -34,22 +34,20 @@ namespace GLedApiDotNet.LedSettings
             DigitalModeI = 18
         }
 
-        private Modes mode = Modes.Null;
+        protected Modes Mode { get; set; } = Modes.Null;
 
         private byte maxBrightness = 0;
         private byte minBrightness = 0;
 
-        private byte white = 0;
-        private Color color = Color.Empty;
+        protected byte White { get; set; } = 0;
+        protected Color Color { get; set; } = Color.Empty;
 
-        private ushort time0 = 0;
-        private ushort time1 = 0;
-        private ushort time2 = 0;
+        protected ushort Time0 { get; set; } = 0;
+        protected ushort Time1 { get; set; } = 0;
+        protected ushort Time2 { get; set; } = 0;
 
-        private byte ctrlValue0 = 0;
-        private byte ctrlValue1 = 0;
-
-        protected Modes Mode { get => mode; set => mode = value; }
+        protected byte CtrlValue0 { get; set; } = 0;
+        protected byte CtrlValue1 { get; set; } = 0;
 
         protected byte MaxBrightness { get => maxBrightness;
             set
@@ -82,13 +80,6 @@ namespace GLedApiDotNet.LedSettings
             this.MinBrightness = minBrightness;
         }
 
-        protected byte White { get => white; set => white = value; }
-        protected Color Color { get => color; set => color = value; }
-
-        protected ushort Time0 { get => time0; set => time0 = value; }
-        protected ushort Time1 { get => time1; set => time1 = value; }
-        protected ushort Time2 { get => time2; set => time2 = value; }
-
         // Undocumented behavior - API time values are 1/100ths of seconds, not milliseconds
         private static ushort SetTime(TimeSpan value)
         {
@@ -103,12 +94,9 @@ namespace GLedApiDotNet.LedSettings
         // Undocumented behavior - API time values are 1/100ths of seconds, not milliseconds
         private static TimeSpan GetTime(ushort value) => TimeSpan.FromMilliseconds(((double)value) * 10);
 
-        protected TimeSpan TimeSpan0 { get => GetTime(time0); set => time0 = SetTime(value); }
-        protected TimeSpan TimeSpan1 { get => GetTime(time1); set => time1 = SetTime(value); }
-        protected TimeSpan TimeSpan2 { get => GetTime(time2); set => time2 = SetTime(value); }
-
-        protected byte CtrlValue0 { get => ctrlValue0; set => ctrlValue0 = value; }
-        protected byte CtrlValue1 { get => ctrlValue1; set => ctrlValue1 = value; }
+        protected TimeSpan TimeSpan0 { get => GetTime(Time0); set => Time0 = SetTime(value); }
+        protected TimeSpan TimeSpan1 { get => GetTime(Time1); set => Time1 = SetTime(value); }
+        protected TimeSpan TimeSpan2 { get => GetTime(Time2); set => Time2 = SetTime(value); }
 
         internal LedSetting()
         {
@@ -126,27 +114,27 @@ namespace GLedApiDotNet.LedSettings
             {
                 writer.Write((byte)0); // reserved
 
-                writer.Write((byte)mode);
+                writer.Write((byte)Mode);
 
-                writer.Write((byte)maxBrightness);
-                writer.Write((byte)minBrightness);
+                writer.Write((byte)MaxBrightness);
+                writer.Write((byte)MinBrightness);
 
-                writer.Write((byte)color.B);
-                writer.Write((byte)color.G);
-                writer.Write((byte)color.R);
-                writer.Write((byte)white);
+                writer.Write((byte)Color.B);
+                writer.Write((byte)Color.G);
+                writer.Write((byte)Color.R);
+                writer.Write((byte)White);
 
-                writer.Write((ushort)time0);
+                writer.Write((ushort)Time0);
                 // ...
 
-                writer.Write((ushort)time1);
+                writer.Write((ushort)Time1);
                 // ...
 
-                writer.Write((ushort)time2);
+                writer.Write((ushort)Time2);
                 // ...
 
-                writer.Write((byte)ctrlValue0);
-                writer.Write((byte)ctrlValue1);
+                writer.Write((byte)CtrlValue0);
+                writer.Write((byte)CtrlValue1);
             }
             return buffer.ToArray();
         }

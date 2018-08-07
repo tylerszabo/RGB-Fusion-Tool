@@ -18,11 +18,10 @@ namespace GLedApiDotNet
         private class MotherboardLedLayoutImpl : IMotherboardLedLayout
         {
             private readonly Lazy<LedType[]> myLayout;
-            private readonly int maxDivisions;
 
             internal MotherboardLedLayoutImpl(Raw.GLedAPIv1_0_0Wrapper api, int maxDivisions)
             {
-                this.maxDivisions = maxDivisions;
+                this.Length = maxDivisions;
                 myLayout = new Lazy<LedType[]>(() => {
                     byte[] rawLayout = api.GetLedLayout(maxDivisions);
                     if (maxDivisions != rawLayout.Length)
@@ -40,7 +39,7 @@ namespace GLedApiDotNet
 
             public LedType this[int i] => myLayout.Value[i];
 
-            public int Length => maxDivisions;
+            public int Length { get; }
 
             public IEnumerator<LedType> GetEnumerator()
             {
@@ -109,15 +108,7 @@ namespace GLedApiDotNet
         }
 
         private Raw.GLedAPIv1_0_0Wrapper api;
-
-        private int maxDivisions;
-        public int MaxDivisions
-        {
-            get
-            {
-                return maxDivisions;
-            }
-        }
+        public int MaxDivisions { get; }
 
         private Lazy<MotherboardLedLayoutImpl> layout;
         public IMotherboardLedLayout Layout
@@ -149,13 +140,13 @@ namespace GLedApiDotNet
 
             api.Initialize();
 
-            maxDivisions = api.GetMaxDivision();
-            if (maxDivisions == 0)
+            MaxDivisions = api.GetMaxDivision();
+            if (MaxDivisions == 0)
 			{
                 throw new GLedAPIException("No divisions");
             }
 
-            layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api, maxDivisions));
+            layout = new Lazy<MotherboardLedLayoutImpl>(() => new MotherboardLedLayoutImpl(api, MaxDivisions));
 
             ledSettings = new Lazy<MotherboardLedSettingsImpl>(() => new MotherboardLedSettingsImpl(layout.Value, new OffLedSetting()));
         }
@@ -180,7 +171,7 @@ namespace GLedApiDotNet
             int applyDivs = 0;
             foreach (int division in divisions)
             {
-                if (division < 0 || division >= maxDivisions)
+                if (division < 0 || division >= MaxDivisions)
                 {
                     throw new ArgumentOutOfRangeException("divisions", division, "all divisions must be between 0 and MaxDivisions");
                 }
