@@ -111,22 +111,10 @@ namespace GLedApiDotNet
         public int MaxDivisions { get; }
 
         private Lazy<MotherboardLedLayoutImpl> layout;
-        public IMotherboardLedLayout Layout
-        {
-            get
-            {
-                return layout.Value;
-            }
-        }
+        public IMotherboardLedLayout Layout => layout.Value;
 
         private Lazy<MotherboardLedSettingsImpl> ledSettings;
-        public IMotherboardLedSettings LedSettings
-        {
-            get
-            {
-                return ledSettings.Value;
-            }
-        }
+        public IMotherboardLedSettings LedSettings => ledSettings.Value;
 
         internal RGBFusionMotherboard(Raw.GLedAPIv1_0_0Wrapper wrapperAPI)
         {

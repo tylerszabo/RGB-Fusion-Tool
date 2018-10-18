@@ -6,17 +6,18 @@
 //
 // You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GLedApiDotNet;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+using System;
 using System.Text;
 
 namespace GLedApiDotNetTests
 {
     public class GLedApiv1_0_0Mock : GLedApiDotNet.Raw.IGLedAPIv1_0_0
     {
-        public static GLedApiDotNet.RGBFusionMotherboard RGBFusionMotherboardFactory(GLedApiv1_0_0Mock mock)
+        public static RGBFusionMotherboard RGBFusionMotherboardFactory(GLedApiv1_0_0Mock mock)
         {
-            return new GLedApiDotNet.RGBFusionMotherboard(new GLedApiDotNet.Raw.GLedAPIv1_0_0Wrapper(mock));
+            return new RGBFusionMotherboard(new GLedApiDotNet.Raw.GLedAPIv1_0_0Wrapper(mock));
         }
 
         public class Status
@@ -51,7 +52,7 @@ namespace GLedApiDotNetTests
             {
                 if (!stateTrackingEnabled)
                 {
-                    throw new System.InvalidOperationException("State tracking not enabled");
+                    throw new InvalidOperationException("State tracking not enabled");
                 }
                 switch (State)
                 {
@@ -63,7 +64,7 @@ namespace GLedApiDotNetTests
                     case ControlState.DoneSetLedData:
                         return true;
                     default:
-                        throw new System.InvalidOperationException(string.Format("Unexpected state {0}", State));
+                        throw new InvalidOperationException(string.Format("Unexpected state {0}", State));
                 }
             }
         }
@@ -77,10 +78,7 @@ namespace GLedApiDotNetTests
         {
             get
             {
-                if (!applyCalled)
-                {
-                    throw new AssertFailedException("Apply was not called");
-                }
+                Assert.IsTrue(applyCalled, "Expect apply called");
                 return lastApply;
             }
         }
@@ -117,15 +115,9 @@ namespace GLedApiDotNetTests
             return NextReturn;
         }
 
-        public uint BeatInput(int iCtrl)
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint BeatInput(int iCtrl) => throw new NotImplementedException();
 
-        public uint GetCalibrationValue()
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint GetCalibrationValue() => throw new NotImplementedException();
 
         public uint GetLedLayout(byte[] bytArray, int arySize)
         {
@@ -147,10 +139,7 @@ namespace GLedApiDotNetTests
             return MaxDivisions;
         }
 
-        public int GetRGBPinType()
-        {
-            throw new System.NotImplementedException();
-        }
+        public int GetRGBPinType() => throw new NotImplementedException();
 
         public uint GetSdkVersion(StringBuilder lpBuf, int bufSize)
         {
@@ -160,10 +149,7 @@ namespace GLedApiDotNetTests
             return NextReturn;
         }
 
-        public uint Get_IT8295_FwVer(byte[] bytArray, int arySize)
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint Get_IT8295_FwVer(byte[] bytArray, int arySize) => throw new NotImplementedException();
 
         public uint InitAPI()
         {
@@ -178,35 +164,17 @@ namespace GLedApiDotNetTests
             return NextReturn;
         }
 
-        public int MonocLedCtrlSupport()
-        {
-            throw new System.NotImplementedException();
-        }
+        public int MonocLedCtrlSupport() => throw new NotImplementedException();
 
-        public uint RGBCalibration_Done(int cal_div)
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint RGBCalibration_Done(int cal_div) => throw new NotImplementedException();
 
-        public uint RGBCalibration_Step1(int cal_div)
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint RGBCalibration_Step1(int cal_div) => throw new NotImplementedException();
 
-        public void RGBCalibration_Step2()
-        {
-            throw new System.NotImplementedException();
-        }
+        public void RGBCalibration_Step2() => throw new NotImplementedException();
 
-        public void RGBCalibration_Step3()
-        {
-            throw new System.NotImplementedException();
-        }
+        public void RGBCalibration_Step3() => throw new NotImplementedException();
 
-        public uint RGBPin_Type1(int pin1, int pin2, int pin3)
-        {
-            throw new System.NotImplementedException();
-        }
+        public uint RGBPin_Type1(int pin1, int pin2, int pin3) => throw new NotImplementedException();
 
         public uint SetLedData(byte[] bytArray, int arySize)
         {
@@ -219,9 +187,6 @@ namespace GLedApiDotNetTests
             return NextReturn;
         }
 
-        public bool SetMonocLedMode(int mnoLedMode)
-        {
-            throw new System.NotImplementedException();
-        }
+        public bool SetMonocLedMode(int mnoLedMode) => throw new NotImplementedException();
     }
 }
