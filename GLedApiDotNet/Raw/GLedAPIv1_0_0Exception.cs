@@ -12,11 +12,8 @@ namespace GLedApiDotNet.Raw
 {
     public class GLedAPIv1_0_0Exception : GLedAPIException
     {
-        private uint errorCode;
-        public uint ErrorCode { get => errorCode; }
-
-        private string apiFunction;
-        public string ApiFunction { get => apiFunction; }
+        public uint ErrorCode { get; private set; }
+        public string ApiFunction { get; private set; }
 
         private static string FormatCode(string apiFunction, uint errorCode, string message = null)
         {
@@ -36,8 +33,8 @@ namespace GLedApiDotNet.Raw
         public GLedAPIv1_0_0Exception(string apiFunction, uint errorCode, Exception innerException = null)
             : base(FormatCode(apiFunction, errorCode), innerException)
         {
-            this.apiFunction = apiFunction;
-            this.errorCode = errorCode;
+            this.ApiFunction = apiFunction;
+            this.ErrorCode = errorCode;
         }
     }
 }
