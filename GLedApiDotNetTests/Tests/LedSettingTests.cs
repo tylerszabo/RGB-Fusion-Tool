@@ -359,6 +359,366 @@ namespace GLedApiDotNetTests.Tests
                 0,      // wTime2
                 0,      // CtrlVal0
                 0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalA1 = {
+                0x00,   // Reserved0
+                10,     // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalA2 = {
+                0x00,   // Reserved0
+                10,     // LedMode
+                80,     // MaxBrightness
+                20,     // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0xF4,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                1,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalB1 = {
+                0x00,   // Reserved0
+                11,     // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0xFF,   // dwColor RR
+                0x00,   // dwColor WW
+                0xC8,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalB2 = {
+                0x00,   // Reserved0
+                11,     // LedMode
+                90,     // MaxBrightness
+                10,     // MinBrightness
+                0xFF,   // dwColor BB
+                0x90,   // dwColor GG
+                0x1E,   // dwColor RR
+                0x00,   // dwColor WW
+                0x5E,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalC1 = {
+                0x00,   // Reserved0
+                12,     // LedMode
+                100,    // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0xFF,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalC2 = {
+                0x00,   // Reserved0
+                12,     // LedMode
+                50,     // MaxBrightness
+                5,      // MinBrightness
+                0xFF,   // dwColor BB
+                0x90,   // dwColor GG
+                0x1E,   // dwColor RR
+                0x00,   // dwColor WW
+                0xC8,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                50,     // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalC3 = {
+                0x00,   // Reserved0
+                12,     // LedMode
+                80,     // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0xFF,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x5E,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                100,    // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalD1 = {
+                0x00,   // Reserved0
+                13,     // LedMode
+                80,     // MaxBrightness
+                0,      // MinBrightness
+                0xFF,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x90,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalD2 = {
+                0x00,   // Reserved0
+                13,     // LedMode
+                50,     // MaxBrightness
+                10,     // MinBrightness
+                0x3C,   // dwColor BB
+                0x14,   // dwColor GG
+                0xDC,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalE1 = {
+                0x00,   // Reserved0
+                14,     // LedMode
+                60,     // MaxBrightness
+                10,     // MinBrightness
+                0x00,   // dwColor BB
+                0x80,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalE2 = {
+                0x00,   // Reserved0
+                14,     // LedMode
+                70,     // MaxBrightness
+                20,     // MinBrightness
+                0xFF,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x2C,   // wTime0
+                0x01,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalF1 = {
+                0x00,   // Reserved0
+                15,     // LedMode
+                90,     // MaxBrightness
+                30,     // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0xC8,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalF2 = {
+                0x00,   // Reserved0
+                15,     // LedMode
+                100,    // MaxBrightness
+                10,     // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x58,   // wTime0
+                0x02,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalG1 = {
+                0x00,   // Reserved0
+                16,     // LedMode
+                90,     // MaxBrightness
+                20,     // MinBrightness
+                0x00,   // dwColor BB
+                0x00,   // dwColor GG
+                0xFF,   // dwColor RR
+                0x00,   // dwColor WW
+                0xC8,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalG2 = {
+                0x00,   // Reserved0
+                16,     // LedMode
+                100,    // MaxBrightness
+                30,     // MinBrightness
+                0x00,   // dwColor BB
+                0xFF,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0x58,   // wTime0
+                0x02,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                50,     // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalG3 = {
+                0x00,   // Reserved0
+                16,     // LedMode
+                70,     // MaxBrightness
+                0,      // MinBrightness
+                0xFF,   // dwColor BB
+                0x00,   // dwColor GG
+                0x00,   // dwColor RR
+                0x00,   // dwColor WW
+                0xE8,   // wTime0
+                0x03,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                100,    // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalH1 = {
+                0x00,   // Reserved0
+                17,     // LedMode
+                100,    // MaxBrightness
+                30,     // MinBrightness
+                0x80,   // dwColor BB
+                0x00,   // dwColor GG
+                0x80,   // dwColor RR
+                0x00,   // dwColor WW
+                0xC8,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalH2 = {
+                0x00,   // Reserved0
+                17,     // LedMode
+                50,     // MaxBrightness
+                5,      // MinBrightness
+                0x00,   // dwColor BB
+                0xFF,   // dwColor GG
+                0xFF,   // dwColor RR
+                0x00,   // dwColor WW
+                0x58,   // wTime0
+                0x02,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalI1 = {
+                0x00,   // Reserved0
+                18,     // LedMode
+                60,     // MaxBrightness
+                10,     // MinBrightness
+                0xFF,   // dwColor BB
+                0x90,   // dwColor GG
+                0x1E,   // dwColor RR
+                0x00,   // dwColor WW
+                0x64,   // wTime0
+                0,      // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
+
+            public static readonly byte[] DigitalI2 = {
+                0x00,   // Reserved0
+                18,     // LedMode
+                80,     // MaxBrightness
+                0,      // MinBrightness
+                0x00,   // dwColor BB
+                0xA5,   // dwColor GG
+                0xFF,   // dwColor RR
+                0x00,   // dwColor WW
+                0xBC,   // wTime0
+                0x02,   // wTime0
+                0,      // wTime1
+                0,      // wTime1
+                0,      // wTime2
+                0,      // wTime2
+                0,      // CtrlVal0
+                0 };    // CtrlVal1
         }
 
         [TestMethod]
@@ -640,5 +1000,285 @@ namespace GLedApiDotNetTests.Tests
         {
             LedSetting led = new TransitionLedSetting(Color.Red, 100, 0, TimeSpan.FromMilliseconds(time));
         }
-   }
+
+        [TestMethod]
+        public void DigitalA1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalA1,
+                new DigitalA(100, 0, TimeSpan.FromSeconds(1), DigitalA.Direction.RightToLeft).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalA1,
+                new DigitalA(100, 0, 100, DigitalA.Direction.RightToLeft).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalA2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalA2,
+                new DigitalA(80, 20, TimeSpan.FromSeconds(5), DigitalA.Direction.LeftToRight).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalA2,
+                new DigitalA(80, 20, 500, DigitalA.Direction.LeftToRight).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalB1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalB1,
+                new DigitalB(Color.Red, 100, 0, TimeSpan.FromSeconds(2)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalB1,
+                new DigitalB(Color.Red, 100, 0, 200).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalB2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalB2,
+                new DigitalB(Color.DodgerBlue, 90, 10, TimeSpan.FromSeconds(3.5)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalB2,
+                new DigitalB(Color.DodgerBlue, 90, 10, 350).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalC1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC1,
+                new DigitalC(Color.Red, 100, 0, TimeSpan.FromSeconds(1), 0).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC1,
+                new DigitalC(Color.Red, 100, 0, 100, 0).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalC2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC2,
+                new DigitalC(Color.DodgerBlue, 50, 5, TimeSpan.FromSeconds(2), 50).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC2,
+                new DigitalC(Color.DodgerBlue, 50, 5, 200, 50).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalC3()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC3,
+                new DigitalC(Color.Lime, 80, 0, TimeSpan.FromSeconds(3.5), 100).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalC3,
+                new DigitalC(Color.Lime, 80, 0, 350, 100).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalD1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalD1,
+                new DigitalD(Color.Blue, 80, 0, TimeSpan.FromSeconds(4)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalD1,
+                new DigitalD(Color.Blue, 80, 0, 400).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalD2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalD2,
+                new DigitalD(Color.Crimson, 50, 10, TimeSpan.FromSeconds(1)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalD2,
+                new DigitalD(Color.Crimson, 50, 10, 100).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalE1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalE1,
+                new DigitalE(Color.Green, 60, 10, TimeSpan.FromSeconds(1)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalE1,
+                new DigitalE(Color.Green, 60, 10, 100).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalE2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalE2,
+                new DigitalE(Color.Blue, 70, 20, TimeSpan.FromSeconds(3)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalE2,
+                new DigitalE(Color.Blue, 70, 20, 300).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalF1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalF1,
+                new DigitalF(90, 30, TimeSpan.FromSeconds(2)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalF1,
+                new DigitalF(90, 30, 200).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalF2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalF2,
+                new DigitalF(100, 10, TimeSpan.FromSeconds(6)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalF2,
+                new DigitalF(100, 10, 600).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalG1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG1,
+                new DigitalG(Color.Red, 90, 20, TimeSpan.FromSeconds(2), 0).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG1,
+                new DigitalG(Color.Red, 90, 20, 200, 0).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalG2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG2,
+                new DigitalG(Color.Lime, 100, 30, TimeSpan.FromSeconds(6), 50).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG2,
+                new DigitalG(Color.Lime, 100, 30, 600, 50).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalG3()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG3,
+                new DigitalG(Color.Blue, 70, 0, TimeSpan.FromSeconds(10), 100).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalG3,
+                new DigitalG(Color.Blue, 70, 0, 1000, 100).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalH1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalH1,
+                new DigitalH(Color.Purple, 100, 30, TimeSpan.FromSeconds(2)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalH1,
+                new DigitalH(Color.Purple, 100, 30, 200).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalH2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalH2,
+                new DigitalH(Color.Yellow, 50, 5, TimeSpan.FromSeconds(6)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalH2,
+                new DigitalH(Color.Yellow, 50, 5, 600).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalI1()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalI1,
+                new DigitalI(Color.DodgerBlue, 60, 10, TimeSpan.FromSeconds(1)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalI1,
+                new DigitalI(Color.DodgerBlue, 60, 10, 100).ToByteArray()
+            );
+        }
+
+        [TestMethod]
+        public void DigitalI2()
+        {
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalI2,
+                new DigitalI(Color.Orange, 80, 0, TimeSpan.FromSeconds(7)).ToByteArray()
+            );
+
+            TestHelper.AssertLedSettingsEqual(
+                SettingByteArrays.DigitalI2,
+                new DigitalI(Color.Orange, 80, 0, 700).ToByteArray()
+            );
+        }
+    }
 }

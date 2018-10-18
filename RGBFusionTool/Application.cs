@@ -106,7 +106,16 @@ namespace RGBFusionTool
                 new ColorCycleArgParser(),
                 new PulseArgParser(),
                 new FlashArgParser(),
-                new OffArgParser()
+                new DigitalAArgParser(),
+                new DigitalBArgParser(),
+                new DigitalCArgParser(),
+                new DigitalDArgParser(),
+                new DigitalEArgParser(),
+                new DigitalFArgParser(),
+                new DigitalGArgParser(),
+                new DigitalHArgParser(),
+                new DigitalIArgParser(),
+                new OffArgParser(),
             };
 
             helpOptionSets = new List<OptionSet>
