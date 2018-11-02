@@ -8,17 +8,22 @@
 
 using GLedApiDotNet;
 using GLedApiDotNet.LedSettings;
+using GvLedLibDotNet;
+using GvLedLibDotNet.GvLedSettings;
 using System;
 using System.IO;
 using Mono.Options;
 using System.Collections.Generic;
 using RGBFusionTool.ArgParsers;
+using RGBFusionTool.ArgParsers.LedSettings;
+using RGBFusionTool.ArgParsers.GvLedSettings;
 
 namespace RGBFusionTool
 {
     public class Application
     {
         private IRGBFusionMotherboard motherboardLEDs;
+        private IRGBFusionPeripherals peripheralLEDs;
         private TextWriter stdout;
         private TextWriter stderr;
 
@@ -47,16 +52,19 @@ namespace RGBFusionTool
         private Dictionary<int, List<string>> zones = new Dictionary<int, List<string>>();
         private List<string> currentZone;
         private List<string> defaultZone;
+        private List<string> peripheralsArgs;
 
         OptionSet genericOptions;
         OptionSet zoneOptions;
-        List<LedSettingArgParser> ledSettingArgParsers;
+        List<LedSettingArgParser<LedSetting>> ledSettingArgParsers;
+        List<LedSettingArgParser<GvLedSetting>> gvLedSettingArgParsers;
 
         List<OptionSet> helpOptionSets;
 
-        public Application(IRGBFusionMotherboard motherboardLEDs, TextWriter stdout, TextWriter stderr)
+        public Application(IRGBFusionMotherboard motherboardLEDs, IRGBFusionPeripherals peripheralLEDs, TextWriter stdout, TextWriter stderr)
         {
             this.motherboardLEDs = motherboardLEDs;
+            this.peripheralLEDs = peripheralLEDs;
             this.stdout = stdout;
             this.stderr = stderr;
 
@@ -64,10 +72,11 @@ namespace RGBFusionTool
 
             defaultZone = new List<string>();
             currentZone = defaultZone;
+            peripheralsArgs = new List<string>();
 
             genericOptions = new OptionSet
             {
-                { string.Format("Usage: {0} [OPTION]... [[LEDSETTING] | [ZONE LEDSETTING]...]", AppDomain.CurrentDomain.FriendlyName) },
+                { string.Format("Usage: {0} [OPTION]... [[LEDSETTING] | [ZONE LEDSETTING]...] [peripherals GVSETTING]", AppDomain.CurrentDomain.FriendlyName) },
                 { "Set RGB Fusion motherboard LEDs" },
                 { "" },
                 { "Options:" },
@@ -97,10 +106,15 @@ namespace RGBFusionTool
                     currentZone = new List<string>();
                     zones.Add(zone, currentZone);
                 } },
+                { "PERIPHERALS:" },
+                { "peripherals", "set peripherals", v => {
+                    currentZone = new List<string>();
+                    peripheralsArgs = currentZone;
+                } },
                 { "<>", v => currentZone.Add(v) },
             };
 
-            ledSettingArgParsers = new List<LedSettingArgParser>
+            ledSettingArgParsers = new List<LedSettingArgParser<LedSetting>>
             {
                 new StaticColorArgParser(),
                 new ColorCycleArgParser(),
@@ -118,6 +132,12 @@ namespace RGBFusionTool
                 new OffArgParser(),
             };
 
+            gvLedSettingArgParsers = new List<LedSettingArgParser<GvLedSetting>>
+            {
+                new OffGvArgParser(),
+                new StaticColorGvArgParser()
+            };
+
             helpOptionSets = new List<OptionSet>
             {
                 genericOptions,
@@ -125,7 +145,15 @@ namespace RGBFusionTool
                 new OptionSet { "" },
                 new OptionSet { "LEDSETTING options:" }
             };
-            foreach (LedSettingArgParser argParser in ledSettingArgParsers)
+            foreach (LedSettingArgParser<LedSetting> argParser in ledSettingArgParsers)
+            {
+                helpOptionSets.Add(new OptionSet { "" });
+                helpOptionSets.Add(argParser.RequiredOptions);
+                helpOptionSets.Add(argParser.ExtraOptions);
+            }
+            helpOptionSets.Add(new OptionSet { "" });
+            helpOptionSets.Add(new OptionSet { "GVSETTING options:" });
+            foreach (LedSettingArgParser<GvLedSetting> argParser in gvLedSettingArgParsers)
             {
                 helpOptionSets.Add(new OptionSet { "" });
                 helpOptionSets.Add(argParser.RequiredOptions);
@@ -193,9 +221,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                     {
                         stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
                     }
+                    for (int i = 0; i < peripheralLEDs.Devices.Length; i++)
+                    {
+                        stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Devices[i]);
+                    }
                 }
 
-                if (defaultZone.Count == 0 && zones.Count == 0)
+                if (defaultZone.Count == 0 && zones.Count == 0 && peripheralsArgs.Count == 0)
                 {
                     return;
                 }
@@ -204,43 +236,61 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                     throw new InvalidOperationException(string.Format("Unexpected options {0} before zone-specific options", string.Join(" ", defaultZone.ToArray())));
                 }
 
-                foreach (int zone in zones.Keys)
-                {
-                    LedSetting setting = null;
-                    foreach (LedSettingArgParser parser in ledSettingArgParsers)
-                    {
-                        setting = parser.TryParse(zones[zone]);
-                        if (setting != null) { break; }
-                    }
-                    motherboardLEDs.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
-                }
-                if (context.verbosity > 0)
-                {
-                    foreach (int zone in zones.Keys)
-                    {
-                        stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.LedSettings[zone]);
-                    }
-                }
-                if (zones.Count > 0)
-                {
-                    motherboardLEDs.Set(zones.Keys);
-                }
-
                 if (defaultZone.Count > 0)
                 {
                     LedSetting setting = null;
-                    foreach (LedSettingArgParser parser in ledSettingArgParsers)
+                    foreach (LedSettingArgParser<LedSetting> parser in ledSettingArgParsers)
                     {
                         setting = parser.TryParse(defaultZone);
                         if (setting != null) { break; }
                     }
 
                     if (setting == null) { throw new InvalidOperationException("No LED mode specified"); }
+
                     if (context.verbosity > 0)
                     {
                         stdout.WriteLine("Set All: {0}", setting);
                     }
                     motherboardLEDs.SetAll(setting);
+                    return;
+                }
+                else if (zones.Count > 0)
+                {
+                    foreach (int zone in zones.Keys)
+                    {
+                        LedSetting setting = null;
+                        foreach (LedSettingArgParser<LedSetting> parser in ledSettingArgParsers)
+                        {
+                            setting = parser.TryParse(zones[zone]);
+                            if (setting != null) { break; }
+                        }
+
+                        motherboardLEDs.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
+                        if (context.verbosity > 0)
+                        {
+                            stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.LedSettings[zone]);
+                        }
+                    }
+
+                    motherboardLEDs.Set(zones.Keys);
+                }
+
+                if (peripheralsArgs.Count > 0)
+                {
+                    GvLedSetting setting = null;
+                    foreach (LedSettingArgParser<GvLedSetting> parser in gvLedSettingArgParsers)
+                    {
+                        setting = parser.TryParse(peripheralsArgs);
+                        if (setting != null) { break; }
+                    }
+
+                    if (setting == null) { throw new InvalidOperationException("No Peripheral LED mode specified"); }
+
+                    if (context.verbosity > 0)
+                    {
+                        stdout.WriteLine("Set All Peripherals: {0}", setting);
+                    }
+                    peripheralLEDs.SetAll(setting);
                     return;
                 }
             }

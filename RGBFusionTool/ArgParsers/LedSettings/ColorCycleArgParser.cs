@@ -11,9 +11,9 @@ using System;
 using Mono.Options;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class ColorCycleArgParser : LedSettingArgParser
+    class ColorCycleArgParser : LedSettingArgParser<LedSetting>
     {
         private class ColorCycleArgParserContext : ArgParserContext
         {

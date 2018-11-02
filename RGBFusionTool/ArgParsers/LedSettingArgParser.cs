@@ -9,12 +9,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GLedApiDotNet.LedSettings;
 using Mono.Options;
 
 namespace RGBFusionTool.ArgParsers
 {
-    abstract class LedSettingArgParser
+    abstract class LedSettingArgParser<T>
     {
         public OptionSet RequiredOptions { get; protected set; }
         public OptionSet ExtraOptions { get; protected set; }
@@ -58,7 +57,7 @@ namespace RGBFusionTool.ArgParsers
             return true;
         }
 
-        public abstract LedSetting TryParse(IEnumerable<string> args);
+        public abstract T TryParse(IEnumerable<string> args);
 
         protected static Color GetColor(string input)
         {

@@ -6,21 +6,18 @@
 //
 // You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using GLedApiDotNet.LedSettings;
+using GvLedLibDotNet.GvLedSettings;
 using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.GvLedSettings
 {
-    class DigitalGArgParser : LedSettingArgParser
+    class StaticColorGvArgParser : LedSettingArgParser<GvLedSetting>
     {
-        private class DigitalGParserContext : ArgParserContext
+        private class StaticColorArgParserContext : ArgParserContext
         {
-            public byte MaxBrightness { get; set; }
-            public byte MinBrightness { get; set; }
-            public double Interval { get; set; }
-            public byte DimSpeed { get; set; }
+            public byte Brightness { get; set; }
 
             private string colorString;
             public string ColorString
@@ -35,47 +32,39 @@ namespace RGBFusionTool.ArgParsers
             protected override void SetDefaults()
             {
                 colorString = null;
-                MaxBrightness = 100;
-                MinBrightness = 0;
-                Interval = 1;
-                DimSpeed = 0;
+                Brightness = 10;
             }
         }
 
-        DigitalGParserContext context;
+        StaticColorArgParserContext context;
 
-        private DigitalGArgParser(DigitalGParserContext context) : base(context)
+        private StaticColorGvArgParser(StaticColorArgParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalGArgParser() : this(new DigitalGParserContext ())
+        public StaticColorGvArgParser() : this(new StaticColorArgParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital G" },
-                { "digital-g=", "Digital G {COLOR}", v => context.ColorString = v },
+                { "Static color" },
+                { "c|color|static=", "set static color to {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
-                { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
-                { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "interval=", "(optional) interval ({SECONDS})", (double d) => context.Interval = d },
-                { "dimspeed=", "(optional) dimspeed ({SECONDS})", (byte b) => context.DimSpeed = b },
+                { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
 
-        public override LedSetting TryParse(IEnumerable<string> args)
+        public override GvLedSetting TryParse(IEnumerable<string> args)
         {
             if (!PopulateContext(args))
             {
                 return null;
             }
 
-            TimeSpan interval = TimeSpan.FromSeconds(context.Interval);
-
-            return new DigitalG(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, interval, context.DimSpeed);
+            return new StaticGvLedSetting(GetColor(context.ColorString), context.Brightness);
         }
     }
 }

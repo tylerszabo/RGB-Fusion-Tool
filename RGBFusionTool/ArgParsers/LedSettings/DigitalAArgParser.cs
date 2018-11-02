@@ -11,63 +11,52 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class FlashArgParser : LedSettingArgParser
+    class DigitalAArgParser : LedSettingArgParser<LedSetting>
     {
-        private class FlashArgParserContext : ArgParserContext
+        private class DigitalAParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
-            public double OnOff { get; set; }
-            public double Interval { get; set; }
-            public double Cycle { get; set; }
-            public byte Count { get; set; }
+            public double Speed { get; set; }
+            public DigitalA.Direction Direction { get; set; }
 
-            private string colorString;
-            public string ColorString
+            public void Set()
             {
-                get => colorString; set
-                {
-                    Valid = true;
-                    colorString = value;
-                }
+                Valid = true;
             }
 
             protected override void SetDefaults()
             {
-                colorString = null;
                 MaxBrightness = 100;
                 MinBrightness = 0;
-                OnOff = 0.25;
-                Interval = 1;
-                Cycle = 5;
-                Count = 3;
+                Speed = 1;
+                Direction = DigitalA.Direction.RightToLeft;
             }
         }
 
-        FlashArgParserContext context;
+        DigitalAParserContext context;
 
-        private FlashArgParser(FlashArgParserContext context) : base(context)
+        private DigitalAArgParser(DigitalAParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public FlashArgParser() : this(new FlashArgParserContext ())
+        public DigitalAArgParser() : this(new DigitalAParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Flash" },
-                { "flash=", "flash color {COLOR}", v => context.ColorString = v },
+                { "Digital A" },
+                { "digital-a", "Digital A", v => context.Set() },
             };
             ExtraOptions = new OptionSet
             {
                 { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
                 { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "time=", "(optional) {SECONDS} to flash for", (double d) => context.OnOff = d },
-                { "interval=", "(optional) {SECONDS} in a flash interval", (double d) => context.Interval = d },
-                { "flashcycle=", "(optional) {SECONDS} in a cycle", (double d) => context.Cycle = d },
-                { "count=", "(optional) flash {COUNT} intervals in a cycle", (byte b) => context.Count = b },
+                { "speed=", "(optional) speed ({SECONDS})", (double d) => context.Speed = d },
+                { "rtl|right-to-left", "(optional) right to left", v => context.Direction = DigitalA.Direction.RightToLeft },
+                { "ltr|left-to-right", "(optional) left to right", v => context.Direction = DigitalA.Direction.LeftToRight },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
@@ -79,11 +68,9 @@ namespace RGBFusionTool.ArgParsers
                 return null;
             }
 
-            TimeSpan onoff = TimeSpan.FromSeconds(context.OnOff);
-            TimeSpan interval = TimeSpan.FromSeconds(context.Interval);
-            TimeSpan cycle = TimeSpan.FromSeconds(context.Cycle);
+            TimeSpan speed = TimeSpan.FromSeconds(context.Speed);
 
-            return new FlashLedSetting(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, onoff, interval, cycle, context.Count);
+            return new DigitalA(context.MaxBrightness, context.MinBrightness, speed, context.Direction);
         }
     }
 }

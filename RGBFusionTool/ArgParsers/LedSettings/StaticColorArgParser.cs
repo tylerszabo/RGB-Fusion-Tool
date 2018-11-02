@@ -11,16 +11,13 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class DigitalCArgParser : LedSettingArgParser
+    class StaticColorArgParser : LedSettingArgParser<LedSetting>
     {
-        private class DigitalCParserContext : ArgParserContext
+        private class StaticColorArgParserContext : ArgParserContext
         {
-            public byte MaxBrightness { get; set; }
-            public byte MinBrightness { get; set; }
-            public double Interval { get; set; }
-            public byte DimSpeed { get; set; }
+            public byte Brightness { get; set; }
 
             private string colorString;
             public string ColorString
@@ -35,33 +32,27 @@ namespace RGBFusionTool.ArgParsers
             protected override void SetDefaults()
             {
                 colorString = null;
-                MaxBrightness = 100;
-                MinBrightness = 0;
-                Interval = 1;
-                DimSpeed = 0;
+                Brightness = 100;
             }
         }
 
-        DigitalCParserContext context;
+        StaticColorArgParserContext context;
 
-        private DigitalCArgParser(DigitalCParserContext context) : base(context)
+        private StaticColorArgParser(StaticColorArgParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalCArgParser() : this(new DigitalCParserContext ())
+        public StaticColorArgParser() : this(new StaticColorArgParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital C" },
-                { "digital-c=", "Digital C {COLOR}", v => context.ColorString = v },
+                { "Static color" },
+                { "c|color|static=", "set static color to {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
-                { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
-                { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "interval=", "(optional) interval ({SECONDS})", (double d) => context.Interval = d },
-                { "dimspeed=", "(optional) dimspeed ({SECONDS})", (byte b) => context.DimSpeed = b },
+                { "b|brightness=", "(optional) brightness (0-100)", (byte b) => context.Brightness = b },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
@@ -73,9 +64,7 @@ namespace RGBFusionTool.ArgParsers
                 return null;
             }
 
-            TimeSpan interval = TimeSpan.FromSeconds(context.Interval);
-
-            return new DigitalC(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, interval, context.DimSpeed);
+            return new StaticLedSetting(GetColor(context.ColorString), context.Brightness);
         }
     }
 }

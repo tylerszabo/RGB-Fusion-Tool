@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLedApiDotNetTests", "GLedA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGBFusionToolTests", "RGBFusionToolTests\RGBFusionToolTests.csproj", "{FD3F35DA-41D4-48B3-AF52-E5F4A2CAC01B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GvLedLibDotNet", "GvLedLibDotNet\GvLedLibDotNet.csproj", "{D3F7C789-08CF-4E6C-B290-9AEC655DDE37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GvLedLibDotNetTests", "GvLedLibDotNetTests\GvLedLibDotNetTests.csproj", "{60AB5CE8-3777-49A1-9C5D-144A5B8EC59A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{FD3F35DA-41D4-48B3-AF52-E5F4A2CAC01B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD3F35DA-41D4-48B3-AF52-E5F4A2CAC01B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD3F35DA-41D4-48B3-AF52-E5F4A2CAC01B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F7C789-08CF-4E6C-B290-9AEC655DDE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F7C789-08CF-4E6C-B290-9AEC655DDE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F7C789-08CF-4E6C-B290-9AEC655DDE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F7C789-08CF-4E6C-B290-9AEC655DDE37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AB5CE8-3777-49A1-9C5D-144A5B8EC59A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AB5CE8-3777-49A1-9C5D-144A5B8EC59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AB5CE8-3777-49A1-9C5D-144A5B8EC59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AB5CE8-3777-49A1-9C5D-144A5B8EC59A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

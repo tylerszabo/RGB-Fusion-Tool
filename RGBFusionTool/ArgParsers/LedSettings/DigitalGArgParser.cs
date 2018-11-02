@@ -11,48 +11,57 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class DigitalFArgParser : LedSettingArgParser
+    class DigitalGArgParser : LedSettingArgParser<LedSetting>
     {
-        private class DigitalFParserContext : ArgParserContext
+        private class DigitalGParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
-            public double Speed { get; set; }
+            public double Interval { get; set; }
+            public byte DimSpeed { get; set; }
 
-            public void Set()
+            private string colorString;
+            public string ColorString
             {
-                Valid = true;
+                get => colorString; set
+                {
+                    Valid = true;
+                    colorString = value;
+                }
             }
 
             protected override void SetDefaults()
             {
+                colorString = null;
                 MaxBrightness = 100;
                 MinBrightness = 0;
-                Speed = 1;
+                Interval = 1;
+                DimSpeed = 0;
             }
         }
 
-        DigitalFParserContext context;
+        DigitalGParserContext context;
 
-        private DigitalFArgParser(DigitalFParserContext context) : base(context)
+        private DigitalGArgParser(DigitalGParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalFArgParser() : this(new DigitalFParserContext ())
+        public DigitalGArgParser() : this(new DigitalGParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital F" },
-                { "digital-f", "Digital F", v => context.Set() },
+                { "Digital G" },
+                { "digital-g=", "Digital G {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
                 { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
                 { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "speed=", "(optional) speed ({SECONDS})", (double d) => context.Speed = d },
+                { "interval=", "(optional) interval ({SECONDS})", (double d) => context.Interval = d },
+                { "dimspeed=", "(optional) dimspeed ({SECONDS})", (byte b) => context.DimSpeed = b },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
@@ -64,9 +73,9 @@ namespace RGBFusionTool.ArgParsers
                 return null;
             }
 
-            TimeSpan speed = TimeSpan.FromSeconds(context.Speed);
+            TimeSpan interval = TimeSpan.FromSeconds(context.Interval);
 
-            return new DigitalF(context.MaxBrightness, context.MinBrightness, speed);
+            return new DigitalG(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, interval, context.DimSpeed);
         }
     }
 }

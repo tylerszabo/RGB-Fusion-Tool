@@ -11,48 +11,42 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class DigitalHArgParser : LedSettingArgParser
+    class DigitalFArgParser : LedSettingArgParser<LedSetting>
     {
-        private class DigitalHParserContext : ArgParserContext
+        private class DigitalFParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
             public double Speed { get; set; }
 
-            private string colorString;
-            public string ColorString
+            public void Set()
             {
-                get => colorString; set
-                {
-                    Valid = true;
-                    colorString = value;
-                }
+                Valid = true;
             }
 
             protected override void SetDefaults()
             {
-                colorString = null;
                 MaxBrightness = 100;
                 MinBrightness = 0;
                 Speed = 1;
             }
         }
 
-        DigitalHParserContext context;
+        DigitalFParserContext context;
 
-        private DigitalHArgParser(DigitalHParserContext context) : base(context)
+        private DigitalFArgParser(DigitalFParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalHArgParser() : this(new DigitalHParserContext ())
+        public DigitalFArgParser() : this(new DigitalFParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital H" },
-                { "digital-h=", "Digital H {COLOR}", v => context.ColorString = v },
+                { "Digital F" },
+                { "digital-f", "Digital F", v => context.Set() },
             };
             ExtraOptions = new OptionSet
             {
@@ -72,7 +66,7 @@ namespace RGBFusionTool.ArgParsers
 
             TimeSpan speed = TimeSpan.FromSeconds(context.Speed);
 
-            return new DigitalH(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, speed);
+            return new DigitalF(context.MaxBrightness, context.MinBrightness, speed);
         }
     }
 }

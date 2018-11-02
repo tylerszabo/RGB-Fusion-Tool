@@ -11,16 +11,15 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class PulseArgParser : LedSettingArgParser
+    class DigitalIArgParser : LedSettingArgParser<LedSetting>
     {
-        private class PulseArgParserContext : ArgParserContext
+        private class DigitalIParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
-            public double FadeOn { get; set; }
-            public double FadeOff { get; set; }
+            public double Speed { get; set; }
 
             private string colorString;
             public string ColorString
@@ -37,31 +36,29 @@ namespace RGBFusionTool.ArgParsers
                 colorString = null;
                 MaxBrightness = 100;
                 MinBrightness = 0;
-                FadeOn = 8;
-                FadeOff = 4;
+                Speed = 1;
             }
         }
 
-        PulseArgParserContext context;
+        DigitalIParserContext context;
 
-        private PulseArgParser(PulseArgParserContext context) : base(context)
+        private DigitalIArgParser(DigitalIParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public PulseArgParser() : this(new PulseArgParserContext ())
+        public DigitalIArgParser() : this(new DigitalIParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Pulse" },
-                { "pulse=", "pulse color {COLOR}", v => context.ColorString = v },
+                { "Digital I" },
+                { "digital-i=", "Digital I {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
                 { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
                 { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "fadeon=", "(optional) fade on time ({SECONDS})", (double d) => context.FadeOn = d },
-                { "fadeoff=", "(optional) fade off time ({SECONDS})", (double d) => context.FadeOff = d },
+                { "speed=", "(optional) speed ({SECONDS})", (double d) => context.Speed = d },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
@@ -73,10 +70,9 @@ namespace RGBFusionTool.ArgParsers
                 return null;
             }
 
-            TimeSpan fadeOn = TimeSpan.FromSeconds(context.FadeOn);
-            TimeSpan fadeOff = TimeSpan.FromSeconds(context.FadeOff);
+            TimeSpan speed = TimeSpan.FromSeconds(context.Speed);
 
-            return new PulseLedSetting(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, fadeOn, fadeOff);
+            return new DigitalI(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, speed);
         }
     }
 }

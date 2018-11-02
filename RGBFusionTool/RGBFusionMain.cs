@@ -8,6 +8,7 @@
 
 using GLedApiDotNet;
 using GLedApiDotNet.LedSettings;
+using GvLedLibDotNet;
 using System;
 using System.Collections.Generic;
 
@@ -29,6 +30,7 @@ namespace RGBFusionTool
         {
             Application application = new Application(
                 new LazyMotherboard(),
+                new RGBFusionPeripherals(),
                 Console.Out,
                 Console.Error
             );

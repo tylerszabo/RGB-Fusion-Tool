@@ -8,6 +8,9 @@
 
 using GLedApiDotNet;
 using GLedApiDotNetTests;
+using GvLedLibDotNet;
+using GvLedLibDotNetTests;
+using GvLedLibDotNetTests.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -39,7 +42,8 @@ namespace RGBFusionToolTests.Tests
             public void SetAll(GLedApiDotNet.LedSettings.LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
         }
 
-        private GLedApiv1_0_0Mock mock;
+        private GLedApiv1_0_0Mock mobo_mock;
+        private GvLedLibv1_0Mock peripheral_mock;
         private RGBFusionTool.Application rgbFusionTool;
         private StringBuilder stdout;
         private StringBuilder stderr;
@@ -47,10 +51,11 @@ namespace RGBFusionToolTests.Tests
         [TestInitialize]
         public void Setup()
         {
-            mock = new GLedApiv1_0_0Mock(true);
+            mobo_mock = new GLedApiv1_0_0Mock(true);
+            peripheral_mock = new GvLedLibv1_0Mock();
             stdout = new StringBuilder();
             stderr = new StringBuilder();
-            rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mock), new StringWriter(stdout), new StringWriter(stderr));
+            rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mobo_mock), GvLedLibv1_0Mock.RGBFusionPeripheralsFactory(peripheral_mock), new StringWriter(stdout), new StringWriter(stderr));
         }
 
         [DataRow(new string[] { "--help" }, DisplayName = "--help")]
@@ -61,13 +66,14 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(args);
 
-            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), USAGE, "Expect stdout shows usage");
 
             // Ensure each supported option appears in help
             string[] supportedOptions = {
                 "zone",
+                "peripherals",
 
                 "static",
                 "colorcycle",
@@ -93,7 +99,7 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(args);
 
-            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
 
             string[] requiredPatterns = {
@@ -118,7 +124,7 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(new string[]{});
 
-            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
         }
 
@@ -161,7 +167,7 @@ namespace RGBFusionToolTests.Tests
                 // This pattern avoids a dependency on any particular options library
             }
 
-            Assert.IsFalse(mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
             StringAssert.Matches(stderr.ToString(), USAGE, "Expect stderr shows usage");
         }
@@ -192,7 +198,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -209,7 +215,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), new Regex("color\\b.*dodgerblue", RegexOptions.IgnoreCase), "Expect stdout includes color name");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -226,7 +232,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), new Regex("color\\b.*\\b30\\b.*\\b144\\b.*\\b255\\b", RegexOptions.IgnoreCase), "Expect stdout includes color values");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -244,7 +250,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -261,7 +267,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), new Regex("brightness\\b.*\\b50\\b", RegexOptions.IgnoreCase), "Expect stdout includes brightness value");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -280,7 +286,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -297,7 +303,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), COLORCYCLE, "Expect stdout includes mode and time");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -314,7 +320,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_4s,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -331,7 +337,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_500ms,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -348,7 +354,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleB,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -371,7 +377,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bindigo\\b", RegexOptions.IgnoreCase), "Expect stdout to note indigo");
             StringAssert.DoesNotMatch(stdout.ToString(), new Regex("\\bviolet\\b", RegexOptions.IgnoreCase), "Expect stdout to note violet");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleB,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -385,7 +391,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -404,7 +410,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b30(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade on time");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade off time");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -418,7 +424,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.FlashC,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -439,7 +445,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b4(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes cycle time");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2\\b", RegexOptions.IgnoreCase),"Expect stdout includes flash count");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.FlashC,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -454,7 +460,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalA1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -473,7 +479,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
             StringAssert.Matches(stdout.ToString(), new Regex("\\brighttoleft\\b", RegexOptions.IgnoreCase),"Expect stdout includes direction");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalA1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -487,7 +493,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalA2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -505,7 +511,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b5(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
             StringAssert.Matches(stdout.ToString(), new Regex("\\blefttoright\\b", RegexOptions.IgnoreCase),"Expect stdout includes direction");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalA2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -520,7 +526,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalB1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -539,7 +545,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalB1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -553,7 +559,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalB2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -571,7 +577,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b3.5\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalB2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -586,7 +592,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -606,7 +612,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -620,7 +626,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -639,7 +645,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b50\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -654,7 +660,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC3,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -674,7 +680,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b3.5\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b100\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalC3,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -689,7 +695,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -708,7 +714,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b4(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -723,7 +729,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -742,7 +748,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalD2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -757,7 +763,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalE1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -776,7 +782,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes cycletime");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalE1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -790,7 +796,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalE2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -808,7 +814,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b20\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b3(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes cycletime");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalE2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -822,7 +828,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalF1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -839,7 +845,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b30\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalF1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -854,7 +860,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalF2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -872,7 +878,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b6(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalF2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -887,7 +893,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -907,7 +913,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -922,7 +928,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -942,7 +948,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b6(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b50\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -957,7 +963,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG3,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -977,7 +983,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes interval");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b100\\b", RegexOptions.IgnoreCase),"Expect stdout includes dimspeed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalG3,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -992,7 +998,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalH1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1011,7 +1017,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b30\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b2(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalH1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1025,7 +1031,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalH2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1043,7 +1049,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b5\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b6(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalH2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1058,7 +1064,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalI1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1077,7 +1083,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b10\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalI1,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1092,7 +1098,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalI2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1111,7 +1117,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b0\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b7(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes speed");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.DigitalI2,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1125,7 +1131,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.Off,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1139,7 +1145,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), new Regex("\\boff\\b", RegexOptions.IgnoreCase),"Expect stdout includes off");
 
-            TestHelper.AssertAllLeds(mock,
+            TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.Off,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
@@ -1155,8 +1161,9 @@ namespace RGBFusionToolTests.Tests
 
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), new Regex("zone \\d+", RegexOptions.IgnoreCase), "Expect stdout lists zones");
+            StringAssert.Matches(stdout.ToString(), new Regex("peripheral \\d+", RegexOptions.IgnoreCase), "Expect stdout lists peripherals");
 
-            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
         }
 
         [DataRow(new string[] { "-z1", "--color=DodgerBlue" }, DisplayName = "-z1")]
@@ -1172,11 +1179,11 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
+            TestHelper.AssertLedDivision(mobo_mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
 
-            Assert.AreEqual(2, mock.LastApply, "Expect applied division 1 only");
+            Assert.AreEqual(2, mobo_mock.LastApply, "Expect applied division 1 only");
 
-            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
         }
 
         [DataRow(new string[] { "--zone=0", "--color=Red", "--brightness=50" }, 0, DisplayName = "--zone=0 --color=Red --brightness=50")]
@@ -1192,11 +1199,11 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, zone);
+            TestHelper.AssertLedDivision(mobo_mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, zone);
 
-            Assert.AreEqual(0x1 << zone, mock.LastApply, string.Format("Expect applied division {0} only", zone));
+            Assert.AreEqual(0x1 << zone, mobo_mock.LastApply, string.Format("Expect applied division {0} only", zone));
 
-            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
         }
 
         [DataRow(new string[]{ "--zone=0", "--color=Red", "--brightness=50", "--zone=1", "--colorcycle", "--zone=2", "--color=DodgerBlue" }, DisplayName = "--zone=0 --color=Red --brightness=50 --zone=1 --colorcycle --zone=2 --color=DodgerBlue")]
@@ -1208,13 +1215,13 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 0);
-            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
-            TestHelper.AssertLedDivision(mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 2);
+            TestHelper.AssertLedDivision(mobo_mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticRed50, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 0);
+            TestHelper.AssertLedDivision(mobo_mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 1);
+            TestHelper.AssertLedDivision(mobo_mock, GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.StaticDodgerBlue, GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 2);
 
-            Assert.AreEqual(7, mock.LastApply, string.Format("Expect applied divisions 0, 1, and 2"));
+            Assert.AreEqual(7, mobo_mock.LastApply, string.Format("Expect applied divisions 0, 1, and 2"));
 
-            Assert.IsTrue(mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
         }
 
         [DataRow(new string[] { "-v", "--zone=2", "--colorcycle" }, DisplayName = "-v --zone=2 --colorcycle")]
@@ -1230,11 +1237,39 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), COLORCYCLE, "Expect stdout includes mode and time");
             StringAssert.Matches(stdout.ToString(), new Regex("zone\\b.*\\b2\\b", RegexOptions.IgnoreCase), "Expect stdout includes zone");
 
-            TestHelper.AssertLedDivision(mock,
+            TestHelper.AssertLedDivision(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.ColorCycleA_1s,
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS, 2);
 
-            Assert.AreEqual(4, mock.LastApply, string.Format("Expect applied division 2 only"));
+            Assert.AreEqual(4, mobo_mock.LastApply, string.Format("Expect applied division 2 only"));
+        }
+
+        [DataRow(new string[] { "--peripherals", "--off" }, DisplayName = "--peripherals --off")]
+        [DataTestMethod]
+        public void PeripheralsOff(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+
+            GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.Off, peripheral_mock.Settings[0].Value);
+        }
+
+        [DataRow(new string[] { "--peripherals", "--color=DodgerBlue" }, DisplayName = "--peripherals --color=DodgerBlue")]
+        [DataTestMethod]
+        public void PeripheralsStatic(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+
+            GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.StaticDodgerBlue, peripheral_mock.Settings[0].Value);
         }
     }
 }

@@ -11,9 +11,9 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class OffArgParser : LedSettingArgParser
+    class OffArgParser : LedSettingArgParser<LedSetting>
     {
         private class OffArgParserContext : ArgParserContext
         {

@@ -11,11 +11,11 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class DigitalBArgParser : LedSettingArgParser
+    class DigitalHArgParser : LedSettingArgParser<LedSetting>
     {
-        private class DigitalBParserContext : ArgParserContext
+        private class DigitalHParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
@@ -40,19 +40,19 @@ namespace RGBFusionTool.ArgParsers
             }
         }
 
-        DigitalBParserContext context;
+        DigitalHParserContext context;
 
-        private DigitalBArgParser(DigitalBParserContext context) : base(context)
+        private DigitalHArgParser(DigitalHParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalBArgParser() : this(new DigitalBParserContext ())
+        public DigitalHArgParser() : this(new DigitalHParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital B" },
-                { "digital-b=", "Digital B {COLOR}", v => context.ColorString = v },
+                { "Digital H" },
+                { "digital-h=", "Digital H {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
@@ -72,7 +72,7 @@ namespace RGBFusionTool.ArgParsers
 
             TimeSpan speed = TimeSpan.FromSeconds(context.Speed);
 
-            return new DigitalB(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, speed);
+            return new DigitalH(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, speed);
         }
     }
 }

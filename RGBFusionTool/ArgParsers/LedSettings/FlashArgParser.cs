@@ -11,15 +11,18 @@ using Mono.Options;
 using System;
 using System.Collections.Generic;
 
-namespace RGBFusionTool.ArgParsers
+namespace RGBFusionTool.ArgParsers.LedSettings
 {
-    class DigitalEArgParser : LedSettingArgParser
+    class FlashArgParser : LedSettingArgParser<LedSetting>
     {
-        private class DigitalEParserContext : ArgParserContext
+        private class FlashArgParserContext : ArgParserContext
         {
             public byte MaxBrightness { get; set; }
             public byte MinBrightness { get; set; }
-            public double CycleTime { get; set; }
+            public double OnOff { get; set; }
+            public double Interval { get; set; }
+            public double Cycle { get; set; }
+            public byte Count { get; set; }
 
             private string colorString;
             public string ColorString
@@ -36,29 +39,35 @@ namespace RGBFusionTool.ArgParsers
                 colorString = null;
                 MaxBrightness = 100;
                 MinBrightness = 0;
-                CycleTime = 1;
+                OnOff = 0.25;
+                Interval = 1;
+                Cycle = 5;
+                Count = 3;
             }
         }
 
-        DigitalEParserContext context;
+        FlashArgParserContext context;
 
-        private DigitalEArgParser(DigitalEParserContext context) : base(context)
+        private FlashArgParser(FlashArgParserContext context) : base(context)
         {
             this.context = context;
         }
 
-        public DigitalEArgParser() : this(new DigitalEParserContext ())
+        public FlashArgParser() : this(new FlashArgParserContext ())
         {
             RequiredOptions = new OptionSet
             {
-                { "Digital E" },
-                { "digital-e=", "Digital E {COLOR}", v => context.ColorString = v },
+                { "Flash" },
+                { "flash=", "flash color {COLOR}", v => context.ColorString = v },
             };
             ExtraOptions = new OptionSet
             {
                 { "maxbrightness=", "(optional) max brightness (0-100)", (byte b) => context.MaxBrightness = b },
                 { "minbrightness=", "(optional) min brightness (0-100)", (byte b) => context.MinBrightness = b },
-                { "cycletime=", "(optional) cycletime ({SECONDS})", (double d) => context.CycleTime = d },
+                { "time=", "(optional) {SECONDS} to flash for", (double d) => context.OnOff = d },
+                { "interval=", "(optional) {SECONDS} in a flash interval", (double d) => context.Interval = d },
+                { "flashcycle=", "(optional) {SECONDS} in a cycle", (double d) => context.Cycle = d },
+                { "count=", "(optional) flash {COUNT} intervals in a cycle", (byte b) => context.Count = b },
                 { "<>", v => throw new InvalidOperationException(string.Format("Unsupported option {0}", v)) }
             };
         }
@@ -70,9 +79,11 @@ namespace RGBFusionTool.ArgParsers
                 return null;
             }
 
-            TimeSpan cycletime = TimeSpan.FromSeconds(context.CycleTime);
+            TimeSpan onoff = TimeSpan.FromSeconds(context.OnOff);
+            TimeSpan interval = TimeSpan.FromSeconds(context.Interval);
+            TimeSpan cycle = TimeSpan.FromSeconds(context.Cycle);
 
-            return new DigitalE(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, cycletime);
+            return new FlashLedSetting(GetColor(context.ColorString), context.MaxBrightness, context.MinBrightness, onoff, interval, cycle, context.Count);
         }
     }
 }
