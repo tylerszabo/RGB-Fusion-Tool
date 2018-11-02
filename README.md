@@ -14,6 +14,8 @@ Direct link:
   - SHA-256 hash: `02a3ec94bbec022013bd1086a1eedf7ea4177edd3127b4179ccb2aeccad3a256`
 - [B18.0206.1.zip](https://www.gigabyte.com/WebPage/332/images/B18.0206.1.zip)
   - SHA-256 hash: `fd312d17482a866fc9b7902549dc187f120d9d883a9504cccf9e9eef93243d8d`
+- [B18.1004.1.zip](https://www.gigabyte.com/WebPage/332/images/B18.1004.1.zip)
+  - SHA-256 hash: `74aaedc8b5e901f5e5f0296e5c01dac4cb429845d437b1cde42480c0c480f6aa`
 
 ## Building
 
@@ -21,11 +23,15 @@ Build with [Visual Studio 2017](https://www.visualstudio.com/downloads/), then c
 
 ```
 GLedApiDotNet.dll
+GvLedLibDotNet.dll
 Mono.Options.dll
 RGBFusionTool.exe
 GLedApi.dll
 ycc.dll
 layout.ini
+GvBiosLib.dll
+GvDisplay.dll
+GvLedLib.dll
 README.md
 LICENSE
 ```
