@@ -217,13 +217,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                 if (context.flag_List || context.verbosity > 0)
                 {
-                    for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
-                    {
-                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
-                    }
                     for (int i = 0; i < peripheralLEDs.Devices.Length; i++)
                     {
                         stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Devices[i]);
+                    }
+                    for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
+                    {
+                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
                     }
                 }
 
