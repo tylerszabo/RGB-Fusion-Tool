@@ -74,6 +74,7 @@ You should have received a copy of the GNU General Public License along with thi
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="ArgParsers\GvLedSettings\ColorCycleGvArgParser.cs" />
     <Compile Include="ArgParsers\GvLedSettings\OffGvArgParser.cs" />
     <Compile Include="ArgParsers\GvLedSettings\StaticColorGvArgParser.cs" />
     <Compile Include="ArgParsers\LedSettings\ColorCycleArgParser.cs" />

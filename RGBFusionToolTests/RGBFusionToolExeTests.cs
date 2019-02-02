@@ -1260,7 +1260,7 @@ namespace RGBFusionToolTests.Tests
 
         [DataRow(new string[] { "--peripherals", "--color=DodgerBlue" }, DisplayName = "--peripherals --color=DodgerBlue")]
         [DataTestMethod]
-        public void PeripheralsStatic(string[] args)
+        public void PeripheralsStaticDodgerBlue(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -1270,6 +1270,48 @@ namespace RGBFusionToolTests.Tests
             Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.StaticDodgerBlue, peripheral_mock.Settings[0].Value);
+        }
+
+        [DataRow(new string[] { "--peripherals", "--color=Red", "--brightness=5" }, DisplayName = "--peripherals --color=Red --brightness=5")]
+        [DataTestMethod]
+        public void PeripheralsStaticRed(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+
+            GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.StaticRed, peripheral_mock.Settings[0].Value);
+        }
+
+        [DataRow(new string[] { "--peripherals", "--colorcycle" }, DisplayName = "--peripherals --colorcycle")]
+        [DataTestMethod]
+        public void PeripheralsColorCycleA(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+
+            GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.ColorCycleA, peripheral_mock.Settings[0].Value);
+        }
+
+        [DataRow(new string[] { "--peripherals", "--colorcycle=5", "--brightness=11" }, DisplayName = "--peripherals --colorcycle=5 --brightness=11")]
+        [DataTestMethod]
+        public void PeripheralsColorCycleB(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+
+            GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.ColorCycleB, peripheral_mock.Settings[0].Value);
         }
     }
 }

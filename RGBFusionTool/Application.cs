@@ -135,7 +135,8 @@ namespace RGBFusionTool
             gvLedSettingArgParsers = new List<LedSettingArgParser<GvLedSetting>>
             {
                 new OffGvArgParser(),
-                new StaticColorGvArgParser()
+                new StaticColorGvArgParser(),
+                new ColorCycleGvArgParser()
             };
 
             helpOptionSets = new List<OptionSet>
