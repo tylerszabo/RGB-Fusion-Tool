@@ -34,9 +34,9 @@ namespace GvLedLibDotNet.GvLedSettings
         protected uint MaxBrightness { get => maxBrightness;
             set
             {
-                if (value > 11)
+                if (value > 10)
                 {
-                    throw new ArgumentOutOfRangeException("value",  value, "must be between 0 and 11");
+                    throw new ArgumentOutOfRangeException("value",  value, "must be between 0 and 10");
                 }
                 maxBrightness = value;
             }
@@ -44,9 +44,9 @@ namespace GvLedLibDotNet.GvLedSettings
         protected uint MinBrightness { get => minBrightness;
             set
             {
-                if (value > 11)
+                if (value > 10)
                 {
-                    throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 11");
+                    throw new ArgumentOutOfRangeException("value", value, "must be between 0 and 10");
                 }
                 minBrightness = value;
             }

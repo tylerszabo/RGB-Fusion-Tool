@@ -1300,7 +1300,7 @@ namespace RGBFusionToolTests.Tests
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.ColorCycleA, peripheral_mock.Settings[0].Value);
         }
 
-        [DataRow(new string[] { "--peripherals", "--colorcycle=5", "--brightness=11" }, DisplayName = "--peripherals --colorcycle=5 --brightness=11")]
+        [DataRow(new string[] { "--peripherals", "--colorcycle=5", "--brightness=8" }, DisplayName = "--peripherals --colorcycle=5 --brightness=8")]
         [DataTestMethod]
         public void PeripheralsColorCycleB(string[] args)
         {

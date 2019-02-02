@@ -23,7 +23,7 @@ namespace GvLedLibDotNetTests.Tests
         public static readonly GVLED_CFG StaticDodgerBlueOff = new GVLED_CFG(1, 0, 0, 0, 0, 0, 0, 0x001E90FF, 0, 1, 1);
         public static readonly GVLED_CFG Off = new GVLED_CFG(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
         public static readonly GVLED_CFG ColorCycleA = new GVLED_CFG(5, 1, 0, 0, 0, 0, 10, 0, 0, 1, 1);
-        public static readonly GVLED_CFG ColorCycleB = new GVLED_CFG(5, 5, 0, 0, 0, 0, 11, 0, 0, 1, 1);
+        public static readonly GVLED_CFG ColorCycleB = new GVLED_CFG(5, 5, 0, 0, 0, 0, 8, 0, 0, 1, 1);
     }
 
     [TestClass]
@@ -50,6 +50,7 @@ namespace GvLedLibDotNetTests.Tests
             AssertGVLedStructEqual(SettingStructs.Empty, (new GvLedSetting()).ToStruct());
         }
 
+        [DataRow(11U)]
         [DataRow(12U)]
         [DataRow(255U)]
         [DataRow(65535U)]
@@ -99,7 +100,7 @@ namespace GvLedLibDotNetTests.Tests
         [TestMethod]
         public void ColorCycleB()
         {
-            AssertGVLedStructEqual(SettingStructs.ColorCycleB, new ColorCycleGvLedSetting(5, 11).ToStruct());
+            AssertGVLedStructEqual(SettingStructs.ColorCycleB, new ColorCycleGvLedSetting(5, 8).ToStruct());
         }
     }
 }
