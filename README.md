@@ -22,7 +22,7 @@ Get `GvBiosLib.dll`, `GvDisplay.dll`, and `GvLedLib.dll` from a Gigabyte RGB Fus
 - [mb_utility_rgb-fusion_B18.0629.1.zip](https://download.gigabyte.us/FileList/Utility/mb_utility_rgb-fusion_B18.0629.1.zip)
   - SHA-256 hash: `89e481b5648d989fd73062ef36f3f40b72666da4bd4c9182f4d3e9b7b2b01f83`
 
-Unfortunately, `GvLedLib.dll` was built against a debug version of the VS2012 SDK, to fetch them get [Visual Studio 2012 Update 5](https://visualstudio.microsoft.com/vs/older-downloads/):
+Unfortunately, `GvLedLib.dll` was built against a debug version of the VS2012 SDK. It may be possible to rename `mfc110u.dll` and `msvcr110.dll` from the official redistributable package to their respective debug (`d`) versions. Otherwise the solution is to fetch them from [Visual Studio 2012 Update 5](https://visualstudio.microsoft.com/vs/older-downloads/):
 
 - mu_visual_studio_2012_update_5_x86_dvd_6967467.iso
   - SHA-256 hash: `405bad3d4249dd94b4fa309bb482ade9ce63d968b59cac9e2d63b0a24577285e`
