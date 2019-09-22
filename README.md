@@ -61,6 +61,8 @@ LICENSE
 
 ## Running
 
+As of the `B19.0311.1` SDK release this tool will need to be run as an Administrator.
+
 `RGBFusionTool` is a command line tool. For usage instructions run:
 
 ```
