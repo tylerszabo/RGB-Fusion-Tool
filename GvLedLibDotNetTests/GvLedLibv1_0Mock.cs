@@ -33,12 +33,11 @@ namespace GvLedLibDotNetTests
 
         public static readonly int[] DefaultDevices = { (int)DeviceType.VGA };
 
-        private bool initialized = false;
-
         public int[] Devices { get; set; } = DefaultDevices;
         public int? DeviceCountOverride { get; set; } = null;
         public uint NextReturn { get; set; } = Status.GV_LED_API_OK;
         public List<GVLED_CFG?> Settings { get; set; }  = new List<GVLED_CFG?>();
+        public bool IsInitialized { get; private set; } = false;
 
         public uint GvLedGetVersion(out int iMajorVersion, out int iMinorVersion)
         {
@@ -52,8 +51,8 @@ namespace GvLedLibDotNetTests
 
         public uint GvLedInitial(out int iDeviceCount, int[] iDeviceIdArray)
         {
-            if (initialized) { Assert.Fail("Already initialized"); }
-            initialized = true;
+            if (IsInitialized) { Assert.Fail("Already initialized"); }
+            IsInitialized = true;
 
             Settings = new List<GVLED_CFG?>(Devices.Length);
             for (int i = 0; i < Devices.Length; i++)
@@ -67,7 +66,7 @@ namespace GvLedLibDotNetTests
 
         public uint GvLedSave(int nIndex, GVLED_CFG config)
         {
-            if (!initialized) { Assert.Fail("Never initialized"); }
+            if (!IsInitialized) { Assert.Fail("Never initialized"); }
 
             if (nIndex == -1)
             {
@@ -86,7 +85,7 @@ namespace GvLedLibDotNetTests
 
         public uint GvLedSet(int nIndex, GVLED_CFG config)
         {
-            if (!initialized) { Assert.Fail("Never initialized"); }
+            if (!IsInitialized) { Assert.Fail("Never initialized"); }
 
             throw new NotImplementedException();
         }

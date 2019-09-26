@@ -29,10 +29,16 @@ namespace RGBFusionTool
 
         private class ApplicationContext
         {
-            public bool flag_Help;
-            public bool flag_List;
-            public bool flag_Version;
-            public int verbosity;
+            public int Verbosity { get; set; }
+            public bool ShowHelp { get; set; }
+            public bool ShowVersion { get; set; }
+            public bool ListZones { get; set; }
+            public bool ListPeripherals { get; set; }
+            public void ListAll()
+            {
+                ListZones = true;
+                ListPeripherals = true;
+            }
 
             public ApplicationContext()
             {
@@ -41,10 +47,11 @@ namespace RGBFusionTool
 
             public void SetDefaults()
             {
-                flag_Help = false;
-                flag_List = false;
-                flag_Version = false;
-                verbosity = 0;
+                Verbosity = 0;
+                ShowHelp = false;
+                ShowVersion = false;
+                ListZones = false;
+                ListPeripherals = false;
             }
         }
         ApplicationContext context;
@@ -80,10 +87,12 @@ namespace RGBFusionTool
                 { "Set RGB Fusion motherboard LEDs" },
                 { "" },
                 { "Options:" },
-                { "v|verbose", v => context.verbosity++ },
-                { "l|list", "list zones", v => context.flag_List = true },
-                { "?|h|help", "show help and exit", v => context.flag_Help = true },
-                { "version", "show version information and exit", v => context.flag_Version = true },
+                { "v|verbose", v => context.Verbosity++ },
+                { "l|list", "list zones", v => context.ListZones = true },
+                { "list-peripherals", "list peripherals", v => context.ListPeripherals = true },
+                { "la|list-all", "list peripherals", v => context.ListAll() },
+                { "?|h|help", "show help and exit", v => context.ShowHelp = true  },
+                { "version", "show version information and exit", v => context.ShowVersion = true },
                 { "" }
             };
 
@@ -198,13 +207,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
             {
                 List<string> afterGeneric = genericOptions.Parse(args);
 
-                if (context.flag_Help)
+                if (context.ShowHelp)
                 {
                     ShowHelp(stdout);
                     return;
                 }
 
-                if (context.flag_Version)
+                if (context.ShowVersion)
                 {
                     ShowVersion(stdout);
                     return;
@@ -212,12 +221,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                 zoneOptions.Parse(afterGeneric);
 
-                if (context.flag_List || context.verbosity > 0)
+                if (context.ListPeripherals || (context.Verbosity > 0 && peripheralsArgs.Count > 0))
                 {
                     for (int i = 0; i < peripheralLEDs.Devices.Length; i++)
                     {
                         stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Devices[i]);
                     }
+                }
+                if (context.ListZones || (context.Verbosity > 0 && (defaultZone.Count > 0 || zones.Count > 0)))
+                {
                     for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
                     {
                         stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
@@ -244,7 +256,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                     if (setting == null) { throw new InvalidOperationException("No LED mode specified"); }
 
-                    if (context.verbosity > 0)
+                    if (context.Verbosity > 0)
                     {
                         stdout.WriteLine("Set All: {0}", setting);
                     }
@@ -268,7 +280,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                         }
 
                         motherboardLEDs.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
-                        if (context.verbosity > 0)
+                        if (context.Verbosity > 0)
                         {
                             stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.LedSettings[zone]);
                         }
@@ -288,7 +300,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                     if (setting == null) { throw new InvalidOperationException("No Peripheral LED mode specified"); }
 
-                    if (context.verbosity > 0)
+                    if (context.Verbosity > 0)
                     {
                         stdout.WriteLine("Set All Peripherals: {0}", setting);
                     }

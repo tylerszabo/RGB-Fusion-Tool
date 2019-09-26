@@ -66,7 +66,8 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(args);
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.Matches(stdout.ToString(), USAGE, "Expect stdout shows usage");
 
@@ -83,6 +84,8 @@ namespace RGBFusionToolTests.Tests
 
                 "verbose",
                 "list",
+                "list-peripherals",
+                "list-all",
                 "help",
                 "version"
             };
@@ -99,7 +102,8 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(args);
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
 
             string[] requiredPatterns = {
@@ -124,7 +128,8 @@ namespace RGBFusionToolTests.Tests
         {
             rgbFusionTool.Main(new string[]{});
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
         }
 
@@ -167,7 +172,8 @@ namespace RGBFusionToolTests.Tests
                 // This pattern avoids a dependency on any particular options library
             }
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
             StringAssert.Matches(stderr.ToString(), USAGE, "Expect stderr shows usage");
         }
@@ -1155,7 +1161,38 @@ namespace RGBFusionToolTests.Tests
         // List and set
         [DataRow(new string[] { "--list", "--static=Green" }, DisplayName = "--list --static=Green")]
         [DataTestMethod]
-        public void List(string[] args)
+        public void ListZones(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("zone \\d+", RegexOptions.IgnoreCase), "Expect stdout lists zones");
+
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect mobo initialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
+        }
+
+        [DataRow(new string[] { "--list-peripherals" }, DisplayName = "--list-peripherals")]
+        // List and set
+        [DataRow(new string[] { "--list-peripherals", "--peripherals", "--static=Green" }, DisplayName = "--list-peripherals --peripherals --static=Green")]
+        [DataTestMethod]
+        public void ListPeripherals(string[] args)
+        {
+            rgbFusionTool.Main(args);
+
+            StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
+            StringAssert.Matches(stdout.ToString(), new Regex("peripheral \\d+", RegexOptions.IgnoreCase), "Expect stdout lists peripherals");
+
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
+        }
+
+        [DataRow(new string[] { "--list-all" }, DisplayName = "--list-all")]
+        [DataRow(new string[] { "-la" }, DisplayName = "-la")]
+        // List and set
+        [DataRow(new string[] { "--list-all", "--static=Green" }, DisplayName = "--list-all --static=Green")]
+        [DataTestMethod]
+        public void ListAll(string[] args)
         {
             rgbFusionTool.Main(args);
 
@@ -1164,6 +1201,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("peripheral \\d+", RegexOptions.IgnoreCase), "Expect stdout lists peripherals");
 
             Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
         }
 
         [DataRow(new string[] { "-z1", "--color=DodgerBlue" }, DisplayName = "-z1")]
@@ -1183,7 +1221,8 @@ namespace RGBFusionToolTests.Tests
 
             Assert.AreEqual(2, mobo_mock.LastApply, "Expect applied division 1 only");
 
-            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect mobo initialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
         }
 
         [DataRow(new string[] { "--zone=0", "--color=Red", "--brightness=50" }, 0, DisplayName = "--zone=0 --color=Red --brightness=50")]
@@ -1203,7 +1242,8 @@ namespace RGBFusionToolTests.Tests
 
             Assert.AreEqual(0x1 << zone, mobo_mock.LastApply, string.Format("Expect applied division {0} only", zone));
 
-            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect mobo initialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
         }
 
         [DataRow(new string[]{ "--zone=0", "--color=Red", "--brightness=50", "--zone=1", "--colorcycle", "--zone=2", "--color=DodgerBlue" }, DisplayName = "--zone=0 --color=Red --brightness=50 --zone=1 --colorcycle --zone=2 --color=DodgerBlue")]
@@ -1221,7 +1261,8 @@ namespace RGBFusionToolTests.Tests
 
             Assert.AreEqual(7, mobo_mock.LastApply, string.Format("Expect applied divisions 0, 1, and 2"));
 
-            Assert.IsTrue(mobo_mock.IsInitialized, "Expect initialized");
+            Assert.IsTrue(mobo_mock.IsInitialized, "Expect mobo initialized");
+            Assert.IsFalse(peripheral_mock.IsInitialized, "Expect peripherals uninitialized");
         }
 
         [DataRow(new string[] { "-v", "--zone=2", "--colorcycle" }, DisplayName = "-v --zone=2 --colorcycle")]
@@ -1253,7 +1294,8 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.Off, peripheral_mock.Settings[0].Value);
         }
@@ -1267,7 +1309,8 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.StaticDodgerBlue, peripheral_mock.Settings[0].Value);
         }
@@ -1281,7 +1324,8 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.StaticRed, peripheral_mock.Settings[0].Value);
         }
@@ -1295,7 +1339,8 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.ColorCycleA, peripheral_mock.Settings[0].Value);
         }
@@ -1309,7 +1354,8 @@ namespace RGBFusionToolTests.Tests
             StringAssert.DoesNotMatch(stderr.ToString(), ANY, "Expect stderr is empty");
             StringAssert.DoesNotMatch(stdout.ToString(), ANY, "Expect stdout is empty");
 
-            Assert.IsFalse(mobo_mock.IsInitialized, "Expect uninitialized");
+            Assert.IsFalse(mobo_mock.IsInitialized, "Expect mobo uninitialized");
+            Assert.IsTrue(peripheral_mock.IsInitialized, "Expect peripherals initialized");
 
             GvLedSettingTests.AssertGVLedStructEqual(SettingStructs.ColorCycleB, peripheral_mock.Settings[0].Value);
         }
