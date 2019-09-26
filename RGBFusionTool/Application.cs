@@ -99,10 +99,6 @@ namespace RGBFusionTool
                     {
                         throw new InvalidOperationException(string.Format("Zone {0} already specified", zone));
                     }
-                    if (zone >= motherboardLEDs.Layout.Length)
-                    {
-                        throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length));
-                    }
                     currentZone = new List<string>();
                     zones.Add(zone, currentZone);
                 } },
@@ -259,6 +255,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                 {
                     foreach (int zone in zones.Keys)
                     {
+                        if (zone >= motherboardLEDs.Layout.Length)
+                        {
+                            throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length));
+                        }
+
                         LedSetting setting = null;
                         foreach (LedSettingArgParser<LedSetting> parser in ledSettingArgParsers)
                         {
