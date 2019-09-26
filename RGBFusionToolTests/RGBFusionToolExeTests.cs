@@ -104,7 +104,7 @@ namespace RGBFusionToolTests.Tests
 
             string[] requiredPatterns = {
                 "\\bRGB Fusion Tool\\b\\s+\\b\\d+(\\.\\d+){1,3}\\b", // name and version
-                "\\b[cC]opyright\\b\\s+(\\([cC]\\)\\s+)\\b2018\\b\\s+\\bTyler Szabo\\b", // copyright year and name
+                "\\b[cC]opyright\\b\\s+(\\([cC]\\)\\s+)\\b2018-2019\\b\\s+\\bTyler Szabo\\b", // copyright year and name
 
                 "\\bGNU General Public License\\b",
                 "\\bFree Software Foundation\\b",

@@ -187,7 +187,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
             o.WriteLine("RGB Fusion Tool {0}", System.Reflection.Assembly.GetAssembly(this.GetType()).GetName().Version);
-            o.WriteLine("Copyright (C) 2018  Tyler Szabo");
+            o.WriteLine("Copyright (C) 2018-2019  Tyler Szabo");
             o.WriteLine();
             o.WriteLine(gplNotice);
             o.WriteLine();
