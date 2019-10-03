@@ -151,7 +151,7 @@ namespace RGBFusionTool
                 new OptionSet { "" },
                 new OptionSet { "LEDSETTING options:" }
             };
-            foreach (LedSettingArgParser<LedSetting> argParser in ledSettingArgParsers)
+            foreach (LedSettingArgParser argParser in ledSettingArgParsers)
             {
                 helpOptionSets.Add(new OptionSet { "" });
                 helpOptionSets.Add(argParser.RequiredOptions);
@@ -159,7 +159,7 @@ namespace RGBFusionTool
             }
             helpOptionSets.Add(new OptionSet { "" });
             helpOptionSets.Add(new OptionSet { "GVSETTING options:" });
-            foreach (LedSettingArgParser<GvLedSetting> argParser in gvLedSettingArgParsers)
+            foreach (LedSettingArgParser argParser in gvLedSettingArgParsers)
             {
                 helpOptionSets.Add(new OptionSet { "" });
                 helpOptionSets.Add(argParser.RequiredOptions);

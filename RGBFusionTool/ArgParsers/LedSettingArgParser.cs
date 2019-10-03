@@ -13,7 +13,7 @@ using Mono.Options;
 
 namespace RGBFusionTool.ArgParsers
 {
-    abstract class LedSettingArgParser<T>
+    abstract class LedSettingArgParser
     {
         public OptionSet RequiredOptions { get; protected set; }
         public OptionSet ExtraOptions { get; protected set; }
@@ -57,8 +57,6 @@ namespace RGBFusionTool.ArgParsers
             return true;
         }
 
-        public abstract T TryParse(IEnumerable<string> args);
-
         protected static Color GetColor(string input)
         {
             Color realColor = Color.FromName(input.Trim());
@@ -68,5 +66,13 @@ namespace RGBFusionTool.ArgParsers
             }
             return realColor;
         }
+    }
+    abstract class LedSettingArgParser<T> : LedSettingArgParser
+    {
+        protected LedSettingArgParser(ArgParserContext context) : base(context)
+        {
+        }
+
+        public abstract T TryParse(IEnumerable<string> args);
     }
 }
