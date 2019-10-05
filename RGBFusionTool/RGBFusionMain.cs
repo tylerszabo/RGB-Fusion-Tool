@@ -7,30 +7,18 @@
 // You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GLedApiDotNet;
-using GLedApiDotNet.LedSettings;
 using GvLedLibDotNet;
 using System;
-using System.Collections.Generic;
 
 namespace RGBFusionTool
 {
     public sealed class RGBFusionMain
     {
-        private class LazyMotherboard : IRGBFusionMotherboard
-        {
-            Lazy<RGBFusionMotherboard> motherboard = new Lazy<RGBFusionMotherboard>();
-            public IMotherboardLedLayout Layout => motherboard.Value.Layout;
-            public IMotherboardLedSettings LedSettings => motherboard.Value.LedSettings;
-            public void Set(params int[] divisions) => motherboard.Value.Set(divisions);
-            public void Set(IEnumerable<int> divisions) => motherboard.Value.Set(divisions);
-            public void SetAll(LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
-        }
-
         private static int Main(string[] args)
         {
             Application application = new Application(
-                new LazyMotherboard(),
-                new RGBFusionPeripherals(),
+                () => new RGBFusionMotherboard(),
+                () => new RGBFusionPeripherals(),
                 Console.Out,
                 Console.Error
             );

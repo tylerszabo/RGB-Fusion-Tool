@@ -27,21 +27,6 @@ namespace RGBFusionToolTests.Tests
         public readonly Regex USAGE = new Regex("^Usage:", RegexOptions.Compiled);
         public readonly Regex COLORCYCLE = new Regex("\\b(color ?)?cycle\\b.*\\b1(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        private class LazyTestMotherboard : IRGBFusionMotherboard
-        {
-            Lazy<RGBFusionMotherboard> motherboard;
-            public LazyTestMotherboard(GLedApiv1_0_0Mock mock)
-            {
-                motherboard = new Lazy<RGBFusionMotherboard>(() => GLedApiv1_0_0Mock.RGBFusionMotherboardFactory(mock));
-            }
-
-            public IMotherboardLedLayout Layout => motherboard.Value.Layout;
-            public IMotherboardLedSettings LedSettings => motherboard.Value.LedSettings;
-            public void Set(params int[] divisions) => motherboard.Value.Set(divisions);
-            public void Set(IEnumerable<int> divisions) => motherboard.Value.Set(divisions);
-            public void SetAll(GLedApiDotNet.LedSettings.LedSetting ledSetting) => motherboard.Value.SetAll(ledSetting);
-        }
-
         private GLedApiv1_0_0Mock mobo_mock;
         private GvLedLibv1_0Mock peripheral_mock;
         private RGBFusionTool.Application rgbFusionTool;
@@ -55,7 +40,7 @@ namespace RGBFusionToolTests.Tests
             peripheral_mock = new GvLedLibv1_0Mock();
             stdout = new StringBuilder();
             stderr = new StringBuilder();
-            rgbFusionTool = new RGBFusionTool.Application(new LazyTestMotherboard(mobo_mock), GvLedLibv1_0Mock.RGBFusionPeripheralsFactory(peripheral_mock), new StringWriter(stdout), new StringWriter(stderr));
+            rgbFusionTool = new RGBFusionTool.Application(() => GLedApiv1_0_0Mock.RGBFusionMotherboardFactory(mobo_mock), () => GvLedLibv1_0Mock.RGBFusionPeripheralsFactory(peripheral_mock), new StringWriter(stdout), new StringWriter(stderr));
         }
 
         [DataRow(new string[] { "--help" }, DisplayName = "--help")]

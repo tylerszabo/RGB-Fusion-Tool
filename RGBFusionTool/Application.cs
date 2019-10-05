@@ -22,8 +22,8 @@ namespace RGBFusionTool
 {
     public class Application
     {
-        private IRGBFusionMotherboard motherboardLEDs;
-        private IRGBFusionPeripherals peripheralLEDs;
+        private Func<IRGBFusionMotherboard> motherboardFactory;
+        private Func<IRGBFusionPeripherals> peripheralsFactory;
         private TextWriter stdout;
         private TextWriter stderr;
 
@@ -68,10 +68,10 @@ namespace RGBFusionTool
 
         List<OptionSet> helpOptionSets;
 
-        public Application(IRGBFusionMotherboard motherboardLEDs, IRGBFusionPeripherals peripheralLEDs, TextWriter stdout, TextWriter stderr)
+        public Application(Func<IRGBFusionMotherboard> motherboardFactory, Func<IRGBFusionPeripherals> peripheralsFactory, TextWriter stdout, TextWriter stderr)
         {
-            this.motherboardLEDs = motherboardLEDs;
-            this.peripheralLEDs = peripheralLEDs;
+            this.motherboardFactory = motherboardFactory;
+            this.peripheralsFactory = peripheralsFactory;
             this.stdout = stdout;
             this.stderr = stderr;
 
@@ -221,18 +221,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                 zoneOptions.Parse(afterGeneric);
 
+                Lazy<IRGBFusionMotherboard> motherboardLEDs = new Lazy<IRGBFusionMotherboard>(motherboardFactory);
+                Lazy<IRGBFusionPeripherals> peripheralLEDs = new Lazy<IRGBFusionPeripherals>(peripheralsFactory);
+
                 if (context.ListPeripherals || (context.Verbosity > 0 && peripheralsArgs.Count > 0))
                 {
-                    for (int i = 0; i < peripheralLEDs.Devices.Length; i++)
+                    for (int i = 0; i < peripheralLEDs.Value.Devices.Length; i++)
                     {
-                        stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Devices[i]);
+                        stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Value.Devices[i]);
                     }
                 }
                 if (context.ListZones || (context.Verbosity > 0 && (defaultZone.Count > 0 || zones.Count > 0)))
                 {
-                    for (int i = 0; i < motherboardLEDs.Layout.Length; i++)
+                    for (int i = 0; i < motherboardLEDs.Value.Layout.Length; i++)
                     {
-                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Layout[i]);
+                        stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Value.Layout[i]);
                     }
                 }
 
@@ -260,16 +263,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                     {
                         stdout.WriteLine("Set All: {0}", setting);
                     }
-                    motherboardLEDs.SetAll(setting);
+                    motherboardLEDs.Value.SetAll(setting);
                     return;
                 }
                 else if (zones.Count > 0)
                 {
                     foreach (int zone in zones.Keys)
                     {
-                        if (zone >= motherboardLEDs.Layout.Length)
+                        if (zone >= motherboardLEDs.Value.Layout.Length)
                         {
-                            throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Layout.Length));
+                            throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Value.Layout.Length));
                         }
 
                         LedSetting setting = null;
@@ -279,14 +282,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                             if (setting != null) { break; }
                         }
 
-                        motherboardLEDs.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
+                        motherboardLEDs.Value.LedSettings[zone] = setting ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
                         if (context.Verbosity > 0)
                         {
-                            stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.LedSettings[zone]);
+                            stdout.WriteLine("Set zone {0}: {1}", zone, motherboardLEDs.Value.LedSettings[zone]);
                         }
                     }
 
-                    motherboardLEDs.Set(zones.Keys);
+                    motherboardLEDs.Value.Set(zones.Keys);
                 }
 
                 if (peripheralsArgs.Count > 0)
@@ -304,7 +307,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                     {
                         stdout.WriteLine("Set All Peripherals: {0}", setting);
                     }
-                    peripheralLEDs.SetAll(setting);
+                    peripheralLEDs.Value.SetAll(setting);
                     return;
                 }
             }
