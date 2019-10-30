@@ -15,13 +15,13 @@ namespace GLedApiDotNet
 {
     public class RGBFusionMotherboard : IRGBFusionMotherboard
     {
-        private class MotherboardLedLayoutImpl : IMotherboardLedLayout
+        private class MotherboardLedLayoutImpl : IReadOnlyList<LedType>
         {
             private readonly Lazy<LedType[]> myLayout;
 
             internal MotherboardLedLayoutImpl(Raw.GLedAPIv1_0_0Wrapper api, int maxDivisions)
             {
-                this.Length = maxDivisions;
+                this.Count = maxDivisions;
                 myLayout = new Lazy<LedType[]>(() => {
                     byte[] rawLayout = api.GetLedLayout(maxDivisions);
                     if (maxDivisions != rawLayout.Length)
@@ -39,7 +39,7 @@ namespace GLedApiDotNet
 
             public LedType this[int i] => myLayout.Value[i];
 
-            public int Length { get; }
+            public int Count { get; }
 
             public IEnumerator<LedType> GetEnumerator()
             {
@@ -52,7 +52,7 @@ namespace GLedApiDotNet
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<LedType>)(myLayout.Value)).GetEnumerator();
         }
 
-        private class MotherboardLedSettingsImpl : IMotherboardLedSettings
+        private class MotherboardLedSettingsImpl : IList<LedSetting>
         {
             private LedSetting[] ledSettings;
 
@@ -69,10 +69,10 @@ namespace GLedApiDotNet
                 }
             }
 
-            internal MotherboardLedSettingsImpl(IMotherboardLedLayout layout, LedSetting defaultSetting)
+            internal MotherboardLedSettingsImpl(MotherboardLedLayoutImpl layout, LedSetting defaultSetting)
             {
                 dirty = true;
-                ledSettings = new LedSetting[layout.Length];
+                ledSettings = new LedSetting[layout.Count];
                 IEnumerator<LedType> e = layout.GetEnumerator();
                 for (int i = 0; i < ledSettings.Length; i++)
                 {
@@ -94,7 +94,9 @@ namespace GLedApiDotNet
                 }
             }
 
-            public int Length => ledSettings.Length;
+            public int Count => ledSettings.Length;
+
+            public bool IsReadOnly => false;
 
             public IEnumerator<LedSetting> GetEnumerator()
             {
@@ -105,16 +107,32 @@ namespace GLedApiDotNet
             }
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<LedSetting>)ledSettings).GetEnumerator();
+
+            public int IndexOf(LedSetting item) => throw new NotSupportedException();
+
+            public void Insert(int index, LedSetting item) => throw new NotSupportedException();
+
+            public void RemoveAt(int index) => throw new NotSupportedException();
+
+            public void Add(LedSetting item) => throw new NotSupportedException();
+
+            public void Clear() => throw new NotSupportedException();
+
+            public bool Contains(LedSetting item) => throw new NotSupportedException();
+
+            public void CopyTo(LedSetting[] array, int arrayIndex) => ledSettings.CopyTo(array, arrayIndex);
+
+            public bool Remove(LedSetting item) => throw new NotSupportedException();
         }
 
         private Raw.GLedAPIv1_0_0Wrapper api;
         public int MaxDivisions { get; }
 
         private Lazy<MotherboardLedLayoutImpl> layout;
-        public IMotherboardLedLayout Layout => layout.Value;
+        public IReadOnlyList<LedType> Layout => layout.Value;
 
         private Lazy<MotherboardLedSettingsImpl> ledSettings;
-        public IMotherboardLedSettings LedSettings => ledSettings.Value;
+        public IList<LedSetting> LedSettings => ledSettings.Value;
 
         internal RGBFusionMotherboard(Raw.GLedAPIv1_0_0Wrapper wrapperAPI)
         {
@@ -145,7 +163,7 @@ namespace GLedApiDotNet
 
         public void SetAll(LedSetting ledSetting)
         {
-            for (int i = 0; i < ledSettings.Value.Length; i++)
+            for (int i = 0; i < ledSettings.Value.Count; i++)
             {
                 ledSettings.Value[i] = ledSetting;
             }

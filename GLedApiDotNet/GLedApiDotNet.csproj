@@ -50,8 +50,6 @@ You should have received a copy of the GNU General Public License along with thi
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMotherboardLedLayout.cs" />
-    <Compile Include="IMotherboardLedSettings.cs" />
     <Compile Include="IRGBFusionMotherboard.cs" />
     <Compile Include="LedSettings\DigitalI.cs" />
     <Compile Include="LedSettings\DigitalH.cs" />

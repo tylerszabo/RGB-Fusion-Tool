@@ -13,8 +13,8 @@ namespace GLedApiDotNet
 {
     public interface IRGBFusionMotherboard
     {
-        IMotherboardLedLayout Layout { get; }
-        IMotherboardLedSettings LedSettings { get; }
+        IReadOnlyList<LedType> Layout { get; }
+        IList<LedSetting> LedSettings { get; }
 
         void SetAll(LedSetting ledSetting);
         void Set(params int[] divisions);

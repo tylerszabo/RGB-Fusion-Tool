@@ -51,8 +51,6 @@ You should have received a copy of the GNU General Public License along with thi
   <ItemGroup>
     <Compile Include="DeviceType.cs" />
     <Compile Include="GvLedAPIException.cs" />
-    <Compile Include="IGvLedSettings.cs" />
-    <Compile Include="IPeripheralDevices.cs" />
     <Compile Include="IRGBFusionPeripherals.cs" />
     <Compile Include="Raw\GLedAPIv1_0_0Exception.cs" />
     <Compile Include="GvLedSettings\GvLedSetting.cs" />

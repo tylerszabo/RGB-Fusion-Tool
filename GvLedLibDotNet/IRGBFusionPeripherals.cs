@@ -13,8 +13,8 @@ namespace GvLedLibDotNet
 {
     public interface IRGBFusionPeripherals
     {
-        IPeripheralDevices Devices { get; }
-        IGvLedSettings LedSettings { get; }
+        IReadOnlyList<DeviceType> Devices { get; }
+        IList<GvLedSetting> LedSettings { get; }
 
         void SetAll(GvLedSetting ledSetting);
     }

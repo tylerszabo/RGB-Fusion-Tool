@@ -15,7 +15,7 @@ namespace GvLedLibDotNet
 {
     public class RGBFusionPeripherals : IRGBFusionPeripherals
     {
-        private class PeripheralDevicesImpl : IPeripheralDevices
+        private class PeripheralDevicesImpl : IReadOnlyList<DeviceType>
         {
             private readonly DeviceType[] devices;
 
@@ -26,14 +26,14 @@ namespace GvLedLibDotNet
 
             public DeviceType this[int i] => devices[i];
 
-            public int Length => devices.Length;
+            public int Count => devices.Length;
 
             public IEnumerator<DeviceType> GetEnumerator() => GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => devices.GetEnumerator();
         }
 
-        private class GvLedSettingsImpl : IGvLedSettings
+        private class GvLedSettingsImpl : IList<GvLedSetting>
         {
             private GvLedSetting[] settings;
             private Raw.GvLedLibv1_0Wrapper api;
@@ -59,11 +59,28 @@ namespace GvLedLibDotNet
                 }
             }
 
-            public int Length => settings.Length;
+            public int Count => settings.Length;
+
+            public bool IsReadOnly => false;
+            public void CopyTo(GvLedSetting[] array, int arrayIndex) => settings.CopyTo(array, arrayIndex);
 
             public IEnumerator<GvLedSetting> GetEnumerator() => GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator() => settings.GetEnumerator();
+
+            public void Add(GvLedSetting item) => throw new NotImplementedException();
+
+            public void Clear() => throw new NotImplementedException();
+
+            public bool Contains(GvLedSetting item) => throw new NotImplementedException();
+
+            public int IndexOf(GvLedSetting item) => throw new NotImplementedException();
+
+            public void Insert(int index, GvLedSetting item) => throw new NotImplementedException();
+
+            public bool Remove(GvLedSetting item) => throw new NotImplementedException();
+
+            public void RemoveAt(int index) => throw new NotImplementedException();
         }
 
 
@@ -73,7 +90,7 @@ namespace GvLedLibDotNet
             api = wrapperAPI;
 
             devices = new Lazy<PeripheralDevicesImpl>(() => new PeripheralDevicesImpl(api.Initialize()));
-            settings = new Lazy<GvLedSettingsImpl>(() => new GvLedSettingsImpl(devices.Value.Length, api));
+            settings = new Lazy<GvLedSettingsImpl>(() => new GvLedSettingsImpl(devices.Value.Count, api));
         }
 
         public RGBFusionPeripherals() : this(new Raw.GvLedLibv1_0Wrapper())
@@ -81,14 +98,14 @@ namespace GvLedLibDotNet
         }
 
         private Lazy<PeripheralDevicesImpl> devices;
-        public IPeripheralDevices Devices => devices.Value;
+        public IReadOnlyList<DeviceType> Devices => devices.Value;
 
         private Lazy<GvLedSettingsImpl> settings;
-        public IGvLedSettings LedSettings => settings.Value;
+        public IList<GvLedSetting> LedSettings => settings.Value;
 
         public void SetAll(GvLedSetting ledSetting)
         {
-            if (settings.Value.Length > 0)
+            if (settings.Value.Count > 0)
             {
                 api.Save(ledSetting);
             }

@@ -78,14 +78,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
 
                 if (context.ListPeripherals || (context.Verbosity > 0 && context.PeripheralsSetting != null))
                 {
-                    for (int i = 0; i < peripheralLEDs.Value.Devices.Length; i++)
+                    for (int i = 0; i < peripheralLEDs.Value.Devices.Count; i++)
                     {
                         stdout.WriteLine("Peripheral {0}: {1}", i, peripheralLEDs.Value.Devices[i]);
                     }
                 }
                 if (context.ListZones || (context.Verbosity > 0 && (context.DefaultSetting != null || context.ZoneSettings?.Count > 0)))
                 {
-                    for (int i = 0; i < motherboardLEDs.Value.Layout.Length; i++)
+                    for (int i = 0; i < motherboardLEDs.Value.Layout.Count; i++)
                     {
                         stdout.WriteLine("Zone {0}: {1}", i, motherboardLEDs.Value.Layout[i]);
                     }
@@ -103,9 +103,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
                 {
                     foreach (int zone in context.ZoneSettings.Keys)
                     {
-                        if (zone >= motherboardLEDs.Value.Layout.Length)
+                        if (zone >= motherboardLEDs.Value.Layout.Count)
                         {
-                            throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Value.Layout.Length));
+                            throw new InvalidOperationException(string.Format("Zone is {0}, max supported is {1}", zone, motherboardLEDs.Value.Layout.Count));
                         }
 
                         motherboardLEDs.Value.LedSettings[zone] = context.ZoneSettings[zone] ?? throw new InvalidOperationException(string.Format("No LED mode specified for zone {0}", zone));
