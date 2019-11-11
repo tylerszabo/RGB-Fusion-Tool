@@ -45,7 +45,7 @@ namespace RGBFusionTool.ArgParsers.LedSettings
             };
         }
 
-        public override LedSetting TryParse(IEnumerable<string> args)
+        public override LedSetting Parse(IEnumerable<string> args)
         {
             if (!PopulateContext(args))
             {

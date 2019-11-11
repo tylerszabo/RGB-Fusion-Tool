@@ -73,6 +73,6 @@ namespace RGBFusionTool.ArgParsers
         {
         }
 
-        public abstract T TryParse(IEnumerable<string> args);
+        public abstract T Parse(IEnumerable<string> args);
     }
 }

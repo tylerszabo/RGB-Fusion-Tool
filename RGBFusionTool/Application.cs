@@ -59,7 +59,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.";
         {
             try
             {
-                ApplicationContext context = parser.ParseArgs(args);
+                ApplicationContext context = parser.Parse(args);
 
                 if (context.ShowHelp)
                 {

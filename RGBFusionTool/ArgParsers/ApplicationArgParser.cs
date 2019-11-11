@@ -47,7 +47,7 @@ namespace RGBFusionTool.ArgParsers
         {
             foreach (LedSettingArgParser<T> parser in parsers)
             {
-                T setting = parser.TryParse(args);
+                T setting = parser.Parse(args);
                 if (setting != default) { return setting; }
             }
 
@@ -56,7 +56,7 @@ namespace RGBFusionTool.ArgParsers
 
         private List<OptionSet> helpOptionSets;
 
-        public ApplicationContext ParseArgs(IEnumerable<string> args)
+        public ApplicationContext Parse(IEnumerable<string> args)
         {
             ApplicationContext context = new ApplicationContext();
 

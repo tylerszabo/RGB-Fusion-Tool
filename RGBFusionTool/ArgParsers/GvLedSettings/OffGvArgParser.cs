@@ -45,7 +45,7 @@ namespace RGBFusionTool.ArgParsers.GvLedSettings
             };
         }
 
-        public override GvLedSetting TryParse(IEnumerable<string> args)
+        public override GvLedSetting Parse(IEnumerable<string> args)
         {
             if (!PopulateContext(args))
             {
