@@ -48,7 +48,7 @@ namespace RGBFusionTool.ArgParsers
             foreach (LedSettingArgParser<T> parser in parsers)
             {
                 T setting = parser.Parse(args);
-                if (setting != default) { return setting; }
+                if (setting != null) { return setting; }
             }
 
             throw new InvalidOperationException("No mode specified");
