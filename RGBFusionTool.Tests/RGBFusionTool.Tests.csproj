@@ -66,17 +66,17 @@ You should have received a copy of the GNU General Public License along with thi
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GLedApiDotNetTests\GLedApiDotNetTests.csproj">
+    <ProjectReference Include="..\GLedApiDotNet.Tests\GLedApiDotNet.Tests.csproj">
       <Project>{0b2f3c9f-50a2-4f94-b6b3-6a2418e7da2f}</Project>
-      <Name>GLedApiDotNetTests</Name>
+      <Name>GLedApiDotNet.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\GLedApiDotNet\GLedApiDotNet.csproj">
       <Project>{8f12301f-ec86-4a76-a6a1-ae3ee0a2945b}</Project>
       <Name>GLedApiDotNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GvLedLibDotNetTests\GvLedLibDotNetTests.csproj">
+    <ProjectReference Include="..\GvLedLibDotNet.Tests\GvLedLibDotNet.Tests.csproj">
       <Project>{60ab5ce8-3777-49a1-9c5d-144a5b8ec59a}</Project>
-      <Name>GvLedLibDotNetTests</Name>
+      <Name>GvLedLibDotNet.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\GvLedLibDotNet\GvLedLibDotNet.csproj">
       <Project>{d3f7c789-08cf-4e6c-b290-9aec655dde37}</Project>
