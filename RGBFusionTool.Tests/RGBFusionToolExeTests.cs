@@ -373,7 +373,7 @@ namespace RGBFusionToolTests.Tests
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
-        [DataRow(new string[] { "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=10" }, DisplayName = "--pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
+        [DataRow(new string[] { "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=9.99" }, DisplayName = "--pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
         [DataTestMethod]
         public void Pulse(string[] args)
         {
@@ -387,7 +387,7 @@ namespace RGBFusionToolTests.Tests
                 GLedApiv1_0_0Mock.DEFAULT_MAXDIVISIONS);
         }
 
-        [DataRow(new string[] { "--verbose", "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=10" }, DisplayName = "--verbose --pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
+        [DataRow(new string[] { "--verbose", "--pulse=Red", "--maxbrightness=75", "--minbrightness=25", "--fadeon=30", "--fadeoff=9.99" }, DisplayName = "--verbose --pulse=Red --maxbrightness=75 --minbrightness=25 --fadeon=30 --fadeoff=10")]
         [DataTestMethod]
         public void Pulse_verbose(string[] args)
         {
@@ -399,7 +399,7 @@ namespace RGBFusionToolTests.Tests
             StringAssert.Matches(stdout.ToString(), new Regex("\\b75\\b", RegexOptions.IgnoreCase),"Expect stdout includes max brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b25\\b", RegexOptions.IgnoreCase),"Expect stdout includes min brightness");
             StringAssert.Matches(stdout.ToString(), new Regex("\\b30(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade on time");
-            StringAssert.Matches(stdout.ToString(), new Regex("\\b10(\\.0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade off time");
+            StringAssert.Matches(stdout.ToString(), new Regex("\\b9\\.99(0*)?\\s?s\\b", RegexOptions.IgnoreCase),"Expect stdout includes fade off time");
 
             TestHelper.AssertAllLeds(mobo_mock,
                 GLedApiDotNetTests.Tests.LedSettingTests.SettingByteArrays.PulseA,

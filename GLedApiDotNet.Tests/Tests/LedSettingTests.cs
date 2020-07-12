@@ -137,7 +137,7 @@ namespace GLedApiDotNetTests.Tests
                 0x00,   // dwColor WW
                 0xB8,   // wTime0
                 0x0B,   // wTime0
-                0xE8,   // wTime1
+                0xE7,   // wTime1
                 0x03,   // wTime1
                 0,      // wTime2
                 0,      // wTime2
@@ -790,7 +790,7 @@ namespace GLedApiDotNetTests.Tests
         {
             TestHelper.AssertLedSettingsEqual(
                 SettingByteArrays.PulseA,
-                new PulseLedSetting(Color.Red, 75, 25, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(10)).ToByteArray()
+                new PulseLedSetting(Color.Red, 75, 25, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(9.99)).ToByteArray()
             );
         }
 
@@ -799,7 +799,7 @@ namespace GLedApiDotNetTests.Tests
         {
             TestHelper.AssertLedSettingsEqual(
                 SettingByteArrays.PulseA,
-                new PulseLedSetting(Color.Red, 75, 25, 3000, 1000).ToByteArray()
+                new PulseLedSetting(Color.Red, 75, 25, 3000, 999).ToByteArray()
             );
         }
 
@@ -808,7 +808,7 @@ namespace GLedApiDotNetTests.Tests
         {
             TestHelper.AssertLedSettingsEqual(
                 SettingByteArrays.PulseA,
-                new PulseLedSetting(Color.Red, 75, 25, TimeSpan.FromSeconds(30.001), TimeSpan.FromSeconds(9.999)).ToByteArray()
+                new PulseLedSetting(Color.Red, 75, 25, TimeSpan.FromSeconds(30.00), TimeSpan.FromSeconds(9.99)).ToByteArray()
             );
         }
 

@@ -36,7 +36,7 @@ Extract the libraries from `mu_visual_studio_2012_update_5_x86_dvd_6967467.iso\p
 
 ## Building
 
-Build with [Visual Studio 2019](https://www.visualstudio.com/downloads/), then copy the build output to a single directory.
+Build with [Visual Studio 2019](https://www.visualstudio.com/downloads/) or [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1), then copy the build output to a single directory.
 
 ```
 GLedApiDotNet.dll

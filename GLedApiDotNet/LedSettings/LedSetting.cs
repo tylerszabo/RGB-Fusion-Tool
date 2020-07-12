@@ -92,7 +92,7 @@ namespace GLedApiDotNet.LedSettings
         }
 
         // Undocumented behavior - API time values are 1/100ths of seconds, not milliseconds
-        private static TimeSpan GetTime(ushort value) => TimeSpan.FromMilliseconds(((double)value) * 10);
+        private static TimeSpan GetTime(ushort value) => TimeSpan.FromMilliseconds(((double)value) * 10.0);
 
         protected TimeSpan TimeSpan0 { get => GetTime(Time0); set => Time0 = SetTime(value); }
         protected TimeSpan TimeSpan1 { get => GetTime(Time1); set => Time1 = SetTime(value); }
